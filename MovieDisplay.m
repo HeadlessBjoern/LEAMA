@@ -11,7 +11,6 @@ function MovieDisplay(moviename, windowrect)
 %
 % The demo will play our standard DualDiscs.mov movie if the 'moviename' is
 % omitted.
-%
 
 % History:
 % 02/05/2009  Created. (MK)
@@ -20,20 +19,23 @@ function MovieDisplay(moviename, windowrect)
 % Check if Psychtoolbox is properly installed:
 AssertOpenGL;
 
-if nargin < 1 || isempty(moviename)
-    % No moviename given: Use our default movie:
-    moviename = [ PsychtoolboxRoot 'high.mov' ]; % hier habe ich schon mal versucht, einen Videonamen einzusetzen (Rest ist original)
-end
-
-if nargin < 2 || isempty(windowrect)
-    windowrect = [];
-end
+% moviename and windowrect are defined in GaborMatrices.m
+% if nargin < 1 || isempty(moviename)
+%     % No moviename given: Use our default movie:
+%     moviename = [ PsychtoolboxRoot 'high.mov' ]; % hier habe ich schon mal versucht, einen Videonamen einzusetzen (Rest ist original)
+% end
+% 
+% if nargin < 2 || isempty(windowrect)
+%     windowrect = [];
+% end
 
 % Wait until user releases keys on keyboard:
 KbReleaseWait;
 
 % Select screen for display of movie:
-screenid = max(Screen('Screens'));
+% screenid = max(Screen('Screens'));
+screenid = whichScreen;
+
 
 try
     % Open 'windowrect' sized window on screen, with black [0] background color:
@@ -43,7 +45,30 @@ try
     movie = Screen('OpenMovie', win, moviename);
     
     % Start playback engine:
+    Screen('FillRect',ptbWindow,[1, 0, 0], Rec2plot); % Display red fixation cross
+    Screen('Flip', screenid, [], 1)
     Screen('PlayMovie', movie, 1);
+
+    if videoSequence(thisTrial) == 1
+        TRIGGER = PRESENTATION1;
+    elseif videoSequence(thisTrial) == 2
+        TRIGGER = PRESENTATION2;
+    elseif videoSequence(thisTrial) == 3
+        TRIGGER = PRESENTATION3;
+    elseif videoSequence(thisTrial) == 4
+        TRIGGER = PRESENTATION4;
+    end
+
+    if TRAINING == 1
+        %         EThndl.sendMessage(TRIGGER);
+        Eyelink('Message', num2str(TRIGGER));
+        Eyelink('command', 'record_status_message "PRESENTATION"');
+    else
+        %         EThndl.sendMessage(TRIGGER);
+        Eyelink('Message', num2str(TRIGGER));
+        Eyelink('command', 'record_status_message "PRESENTATION"');
+        sendtrigger(TRIGGER,port,SITE,stayup);
+    end
     
     % Playback loop: Runs until end of movie or keypress:
     while ~KbCheck
@@ -57,6 +82,8 @@ try
         end
         
         % Draw the new texture immediately to screen:
+        Screen('FillRect',ptbWindow,[1, 0, 0], Rec2plot); % Display red fixation cross
+        Screen('Flip', screenid, [], 1)
         Screen('DrawTexture', win, tex);
         
         % Update display:

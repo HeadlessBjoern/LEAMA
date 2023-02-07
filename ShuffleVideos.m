@@ -11,21 +11,22 @@ videoselection = [zeros(N1_2,1) + 1; % maybe there's a simpler way to do this?
 
 % Shuffle the initial list and save it
 rng(10) % 'set seed' so randperm always shuffles in the same way
-videoselection_shuffled = videoselection(randperm(length(videoselection)));
-
-% Loop for selecting the videos according to next diit in videoselection variable
-for video = 1:length(videoselection_shuffled)
-    if videoselection_shuffled(video) == 1
-        % for checking the loop, text is displayed. This should be videos
-        % later on. (like running a separate script that plays the respective video?)
-        disp("high_skewed") 
-    elseif videoselection_shuffled(video) == 2
-        disp("low_skewed")
-    elseif videoselection_shuffled(video) == 3
-        disp("high_vertical")
-    elseif videoselection_shuffled(video) == 4
-        disp("low_vertical")
-    end
-end
-
+videoSelection_shuffled = videoselection(randperm(length(videoselection)));
+videoSequence = transpose(videoSelection_shuffled);
+% 
+% % Loop for selecting the videos according to next digit in videoselection variable
+% for video = 1:length(videoSelection_shuffled)
+%     if videoSelection_shuffled(video) == 1
+%         % for checking the loop, text is displayed. This should be videos
+%         % later on. (like running a separate script that plays the respective video?)
+%         disp("high_skewed") 
+%     elseif videoSelection_shuffled(video) == 2
+%         disp("low_skewed")
+%     elseif videoSelection_shuffled(video) == 3
+%         disp("high_vertical")
+%     elseif videoSelection_shuffled(video) == 4
+%         disp("low_vertical")
+%     end
+% end
+% 
 
