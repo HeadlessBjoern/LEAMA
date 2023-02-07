@@ -15,6 +15,7 @@ function MovieDisplay(moviename, windowrect)
 % History:
 % 02/05/2009  Created. (MK)
 % 06/17/2013  Cleaned up. (MK)
+% 02/07/2023  Adapted for OCC LEAMA Gabor Matrices (AH)
 
 % Check if Psychtoolbox is properly installed:
 AssertOpenGL;
@@ -33,20 +34,18 @@ AssertOpenGL;
 KbReleaseWait;
 
 % Select screen for display of movie:
-% screenid = max(Screen('Screens'));
-screenid = whichScreen;
-
+% whichScreen = max(Screen('Screens'));
 
 try
     % Open 'windowrect' sized window on screen, with black [0] background color:
-    win = Screen('OpenWindow', screenid, 0, windowrect);
+    win = Screen('OpenWindow', whichScreen, 0, windowrect);
     
     % Open movie file:
     movie = Screen('OpenMovie', win, moviename);
     
     % Start playback engine:
     Screen('FillRect',ptbWindow,[1, 0, 0], Rec2plot); % Display red fixation cross
-    Screen('Flip', screenid, [], 1)
+    Screen('Flip', whichScreen, [], 1)
     Screen('PlayMovie', movie, 1);
 
     if videoSequence(thisTrial) == 1
@@ -82,12 +81,12 @@ try
         end
         
         % Draw the new texture immediately to screen:
-        Screen('FillRect',ptbWindow,[1, 0, 0], Rec2plot); % Display red fixation cross
-        Screen('Flip', screenid, [], 1)
+        Screen('DrawLines',ptbWindow,fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2); % Draw fixation cross
         Screen('DrawTexture', win, tex);
-        
+        Screen('Flip', whichScreen, [], 1)
+
         % Update display:
-        Screen('Flip', win);
+%         Screen('Flip', win, [], 1);
         
         % Release texture:
         Screen('Close', tex);

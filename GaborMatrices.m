@@ -21,8 +21,6 @@ HideCursor(whichScreen);
 
 % define triggers
 TASK_START = 10;
-MATCH = 4; % trigger for matching condition (no change in matrices)
-NO_MATCH = 5; % trigger for non-matching condition (change of matrices)
 FIXATION = 15; % trigger for fixation cross
 PRESENTATION1 = 21; % trigger for presentation of high skewed matrix
 PRESENTATION2 = 22; % trigger for presentation of high vertical matrix
@@ -34,7 +32,7 @@ BLOCK1 = 31; % trigger for start of task (block)
 ENDBLOCK0 = 49; % trigger for end of training block
 ENDBLOCK1 = 41; % trigger for end of task (block)
 RESP_CHANGE = 87; % trigger for response yes (spacebar)
-RESP_NOCHANGE = 88; % trigger for response no (no input)
+NO_RESP = 88; % trigger for response no (no input)
 RESP_WRONG = 89; % trigger for wrong keyboard input response
 TASK_END = 90;
 
@@ -283,10 +281,9 @@ for thisTrial = 1:experiment.nTrials
                 data.allResponses(thisTrial) = whichKey;
                 badResponseFlag = true;
             end
-
         elseif isempty(whichKey)
             data.allResponses(thisTrial) = 0;
-            TRIGGER = RESP_NOCHANGE;
+            TRIGGER = NO_RESP;
         end
 
         % send triggers
@@ -310,45 +307,22 @@ for thisTrial = 1:experiment.nTrials
         % Get and save reaction time for each trial
         reactionTime(thisTrial) = maxResponseTime - time;
 
-        if time > 1
+        if time >  % VIDEO FERTIG
             getResponse = false;
         end
     end
 
-    % Save match/no match
-    if BLOCK == 1 && thisTrial > 1
-        if videoSequence(thisTrial-1) == videoSequence(thisTrial)
-            thisTrialMatch = 1;
-        else
-            thisTrialMatch = 0;
-        end
-        data.trialMatch(thisTrial) = thisTrialMatch;
-    end
-
-
     % Check if response was correct
     if BLOCK == 1 && thisTrial > 1
-        if thisTrialMatch == 1 && data.allResponses(thisTrial) == spaceKeyCode  % Correct matched trial
+        if videoSequence(thisTrial) == 1 && data.allResponses(thisTrial) == 0 % Horizontal + no button press
             data.allCorrect(thisTrial) = 1;
-        elseif thisTrialMatch == 1 && data.allResponses(thisTrial) == 0  % Incorrect matched trial
-            data.allCorrect(thisTrial) = 0;
-        elseif thisTrialMatch == 0 && data.allResponses(thisTrial) == 0  % Correct unmatched trial
+        elseif videoSequence(thisTrial) == 2 && data.allResponses(thisTrial) == spaceKeyCode % Vert + button press
             data.allCorrect(thisTrial) = 1;
-        elseif thisTrialMatch == 0 && data.allResponses(thisTrial) == spaceKeyCode  % Incorrect unmatched trial
-            data.allCorrect(thisTrial) = 0;
-        elseif data.allResponses(thisTrial) ~= spaceKeyCode
-            data.allCorrect(thisTrial) = 0;
-        end
-    elseif BLOCK == 2 && thisTrial > 2
-        if thisTrialMatch == 1 && data.allResponses(thisTrial) == spaceKeyCode  % Correct matched trial
+        elseif videoSequence(thisTrial) == 3 && data.allResponses(thisTrial) == 0 % Horizontal + no button press
             data.allCorrect(thisTrial) = 1;
-        elseif thisTrialMatch == 1 && data.allResponses(thisTrial) == 0  % Incorrect matched trial
-            data.allCorrect(thisTrial) = 0;
-        elseif thisTrialMatch == 0 && data.allResponses(thisTrial) == 0  % Correct unmatched trial
+        elseif videoSequence(thisTrial) == 4 && data.allResponses(thisTrial) == spaceKeyCode % Vert + button press
             data.allCorrect(thisTrial) = 1;
-        elseif thisTrialMatch == 0 && data.allResponses(thisTrial) == spaceKeyCode  % Incorrect unmatched trial
-            data.allCorrect(thisTrial) = 0;
-        elseif data.allResponses(thisTrial) ~= spaceKeyCode
+        else
             data.allCorrect(thisTrial) = 0;
         end
     end
@@ -494,7 +468,7 @@ trigger.BLOCK1 = BLOCK1;
 trigger.ENDBLOCK0 = ENDBLOCK0;
 trigger.ENDBLOCK1 = ENDBLOCK1;
 trigger.RESP_YES = RESP_CHANGE;
-trigger.RESP_NO = RESP_NOCHANGE;
+trigger.RESP_NO = NO_RESP;
 trigger.RESP_WRONG = RESP_WRONG;
 trigger.TASK_END = TASK_END;
 
