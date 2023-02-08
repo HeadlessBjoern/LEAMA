@@ -213,8 +213,8 @@ end
 HideCursor(whichScreen);
 
 % Set photodiode trigger
-baseRect = [0 0 20 20];
-Rec2plot = CenterRectOnPointd(baseRect, 30, screenHeight - 30);
+baseRect = [0 0 15 15];
+Rec2plot = CenterRectOnPointd(baseRect, 0, screenHeight - 10);
 
 %% Experiment Loop
 noFixation = 0;

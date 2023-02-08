@@ -14,9 +14,9 @@ Screen('Screens') % sanity check, whether 2 screens detected
 whichScreen = 1;   
 
 % set resolution and refresh rate
-screenWidth = 1920;
-screenHeight = 1080;
-refreshRate = 60;
+screenWidth = 800;
+screenHeight = 600;
+refreshRate = 100;
 SetResolution(whichScreen, screenWidth, screenHeight, []);
 Screen('ConfigureDisplay', 'Scanout', whichScreen, 0, [], [], refreshRate); % refresh rate of 100hz (only for Linux)
 par.BGcolor = 192;
