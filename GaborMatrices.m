@@ -229,6 +229,7 @@ for thisTrial = 1:experiment.nTrials
     Screen('Flip', ptbWindow);
     TRIGGER = FIXATION;
     timing.cfi = (randsample(2000:6000, 1))/1000;    % Randomize the jittered central fixation interval on trial
+
     if TRAINING == 1
         %         EThndl.sendMessage(TRIGGER);
         Eyelink('Message', num2str(TRIGGER));
@@ -239,110 +240,51 @@ for thisTrial = 1:experiment.nTrials
         Eyelink('command', 'record_status_message "FIXATION"');
         sendtrigger(TRIGGER,port,SITE,stayup);
     end
+
     WaitSecs(timing.cfi);                            % Wait duration of the jittered central fixation interval
 
     %% Present stimulus from videoSequence (2000ms)
     % Check if Psychtoolbox is properly installed:
     AssertOpenGL;
-    movpath = '/home/methlab/Desktop/LEAMA';
 
     if videoSequence(thisTrial) == 1
-        moviename = [ movpath 'high.mov' ];
+        moviename = [ MOV_PATH 'high.mov' ];
     elseif videoSequence(thisTrial) == 2
-        moviename = [ movpath 'high_vertical.mov' ];
+        moviename = [ MOV_PATH 'high_vertical.mov' ];
     elseif videoSequence(thisTrial) == 3
-        moviename = [ movpath 'low.mov' ];
+        moviename = [ MOV_PATH 'low.mov' ];
     elseif videoSequence(thisTrial) == 4
-        moviename = [ movpath 'low_vertical.mov' ];
+        moviename = [ MOV_PATH 'low_vertical.mov' ];
     end
 
+    % Set windowrect for MovieDisplay
     windowrect = [];
 
-    % Play .mov file, send triggers for presentation & overlay red fixation cross
-    MovieDisplay(moviename, windowrect);
-
-    % Get response
-    getResponse = true;
-    badResponseFlag = false;
-    maxResponseTime = GetSecs + 2;
-    while getResponse
-
-        [time,keyCode] = KbWait(-1, 2, maxResponseTime); % Wait 2 seconds for response, continue afterwards if there is no input.
-
-        whichKey = find(keyCode);
-
-        if ~isempty(whichKey)
-            if whichKey == spaceKeyCode
-                getResponse = false;
-                data.allResponses(thisTrial) = whichKey;
-                TRIGGER = RESP_CHANGE;
-            else
-                TRIGGER = RESP_WRONG;
-                data.allResponses(thisTrial) = whichKey;
-                badResponseFlag = true;
-            end
-        elseif isempty(whichKey)
-            data.allResponses(thisTrial) = 0;
-            TRIGGER = NO_RESP;
-        end
-
-        % send triggers
-        if TRAINING == 1
-            %             EThndl.sendMessage(TRIGGER,time);
-            Eyelink('Message', num2str(TRIGGER));
-            Eyelink('command', 'record_status_message "PRESENTATION"');
-        else
-            %             EThndl.sendMessage(TRIGGER,time);
-            Eyelink('Message', num2str(TRIGGER));
-            Eyelink('command', 'record_status_message "PRESENTATION"');
-            sendtrigger(TRIGGER,port,SITE,stayup)
-        end
-
-        if ~isempty(whichKey)
-            if time < maxResponseTime
-                WaitSecs(maxResponseTime - time);
-            end
-        end
-
-        % Get and save reaction time for each trial
-        reactionTime(thisTrial) = maxResponseTime - time;
-
-        if time >  % VIDEO FERTIG
-            getResponse = false;
-        end
-    end
+    % Play .mov file, overlay red fixation cross & send triggers for
+    % presentation & button presses
+    MovieDisplay(moviename, windowrect, whichScreen);
 
     % Check if response was correct
-    if BLOCK == 1 && thisTrial > 1
-        if videoSequence(thisTrial) == 1 && data.allResponses(thisTrial) == 0 % Horizontal + no button press
-            data.allCorrect(thisTrial) = 1;
-        elseif videoSequence(thisTrial) == 2 && data.allResponses(thisTrial) == spaceKeyCode % Vert + button press
-            data.allCorrect(thisTrial) = 1;
-        elseif videoSequence(thisTrial) == 3 && data.allResponses(thisTrial) == 0 % Horizontal + no button press
-            data.allCorrect(thisTrial) = 1;
-        elseif videoSequence(thisTrial) == 4 && data.allResponses(thisTrial) == spaceKeyCode % Vert + button press
-            data.allCorrect(thisTrial) = 1;
-        else
-            data.allCorrect(thisTrial) = 0;
-        end
+    if videoSequence(thisTrial) == 1 && data.allResponses(thisTrial) == 0 % Skewed + NO button press = correct answer
+        data.allCorrect(thisTrial) = 1;
+    elseif videoSequence(thisTrial) == 2 && data.allResponses(thisTrial) == spaceKeyCode % Vert + button press
+        data.allCorrect(thisTrial) = 1;
+    elseif videoSequence(thisTrial) == 3 && data.allResponses(thisTrial) == 0 % Skewed + NO button press = correct answer
+        data.allCorrect(thisTrial) = 1;
+    elseif videoSequence(thisTrial) == 4 && data.allResponses(thisTrial) == spaceKeyCode % Vert + button press = correct answer
+        data.allCorrect(thisTrial) = 1;
+    else
+        data.allCorrect(thisTrial) = 0; % Wrong response
     end
 
     % Display (in-)correct response in CW
-    if data.allCorrect(thisTrial) == 1 && thisTrial > 1
+    if data.allCorrect(thisTrial) == 1
         feedbackText = 'Correct!';
-    elseif data.allCorrect(thisTrial) == 0 && badResponseFlag == false && thisTrial > 1
+    elseif data.allCorrect(thisTrial) == 0 && badResponseFlag == false
         feedbackText = 'Incorrect!';
-    elseif data.allCorrect(thisTrial) == 0 && badResponseFlag == true && thisTrial > 1
-        feedbackText = 'Wrong button! Use only SPACE.';
-        DrawFormattedText(ptbWindow,feedbackText,'center','center',color.textVal);
-        Screen('Flip',ptbWindow);
-        WaitSecs(3);
-    elseif thisTrial == 1
-        disp('No Response to Trial 1 in Gabor Matrices Task');
     end
-    if BLOCK == 1 && thisTrial > 1
-        disp(['Response to Trial ' num2str(thisTrial) ' is ' feedbackText]);
-    end
+    disp(['Response to Trial ' num2str(thisTrial) ' is ' feedbackText]);
+
 
     %     % Check if subject fixate at center, give warning if not
     %     checkFixation;

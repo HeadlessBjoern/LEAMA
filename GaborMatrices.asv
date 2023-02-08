@@ -259,7 +259,7 @@ for thisTrial = 1:experiment.nTrials
     windowrect = [];
 
     % Play .mov file, send triggers for presentation & overlay red fixation cross
-    MovieDisplay(moviename, windowrect);
+    MovieDisplay(moviename, windowrect, whichScreen);
 
     % Get response
     getResponse = true;
@@ -307,57 +307,38 @@ for thisTrial = 1:experiment.nTrials
         % Get and save reaction time for each trial
         reactionTime(thisTrial) = maxResponseTime - time;
 
-        if time >  % VIDEO FERTIG
+        if time > 1 % VIDEO FERTIG
             getResponse = false;
         end
     end
 
-    % Save match/no match
-    if BLOCK == 1 && thisTrial > 1
-        if videoSequence(thisTrial-1) == videoSequence(thisTrial)
-            thisTrialMatch = 1;
+    % Check if response was correct
+    if BLOCK == 1 
+        if videoSequence(thisTrial) == 1 && data.allResponses(thisTrial) == 0 % Skewed + no button press
+            data.allCorrect(thisTrial) = 1;
+        elseif videoSequence(thisTrial) == 2 && data.allResponses(thisTrial) == spaceKeyCode % Vert + button press
+            data.allCorrect(thisTrial) = 1;
+        elseif videoSequence(thisTrial) == 3 && data.allResponses(thisTrial) == 0 % Skewed + no button press
+            data.allCorrect(thisTrial) = 1;
+        elseif videoSequence(thisTrial) == 4 && data.allResponses(thisTrial) == spaceKeyCode % Vert + button press
+            data.allCorrect(thisTrial) = 1;
         else
-            thisTrialMatch = 0;
-        end
-        data.trialMatch(thisTrial) = thisTrialMatch;
-    end
-
-
-    % Check if response was correct
-    if BLOCK == 1 && thisTrial > 1
-        if thisTrialMatch == 1 && data.allResponses(thisTrial) == spaceKeyCode  % Correct matched trial
-            data.allCorrect(thisTrial) = 1;
-        elseif thisTrialMatch == 1 && data.allResponses(thisTrial) == 0  % Incorrect matched trial
-            data.allCorrect(thisTrial) = 0;
-        elseif thisTrialMatch == 0 && data.allResponses(thisTrial) == 0  % Correct unmatched trial
-            data.allCorrect(thisTrial) = 1;
-        elseif thisTrialMatch == 0 && data.allResponses(thisTrial) == spaceKeyCode  % Incorrect unmatched trial
-            data.allCorrect(thisTrial) = 0;
-        elseif data.allResponses(thisTrial) ~= spaceKeyCode
             data.allCorrect(thisTrial) = 0;
         end
     end
-
-    % Check if response was correct
-    if BLOCK == 1 && thisTrial > 1
-        if videoSequence(thisTroia&& data.allResponses(thisTrial) == spaceKeyCode
-    end
-
 
     % Display (in-)correct response in CW
-    if data.allCorrect(thisTrial) == 1 && thisTrial > 1
+    if data.allCorrect(thisTrial) == 1 
         feedbackText = 'Correct!';
-    elseif data.allCorrect(thisTrial) == 0 && badResponseFlag == false && thisTrial > 1
+    elseif data.allCorrect(thisTrial) == 0 && badResponseFlag == false 
         feedbackText = 'Incorrect!';
-    elseif data.allCorrect(thisTrial) == 0 && badResponseFlag == true && thisTrial > 1
+    elseif data.allCorrect(thisTrial) == 0 && badResponseFlag == true 
         feedbackText = 'Wrong button! Use only SPACE.';
         DrawFormattedText(ptbWindow,feedbackText,'center','center',color.textVal);
         Screen('Flip',ptbWindow);
         WaitSecs(3);
-    elseif thisTrial == 1
-        disp('No Response to Trial 1 in Gabor Matrices Task');
     end
-    if BLOCK == 1 && thisTrial > 1
+    if BLOCK == 1 
         disp(['Response to Trial ' num2str(thisTrial) ' is ' feedbackText]);
     end
 
