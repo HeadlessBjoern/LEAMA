@@ -1,4 +1,4 @@
-function MovieDisplay(moviename, windowrect, whichScreen)
+function MovieDisplay(moviename, windowrect, videoSequence, whichScreen, thisTrial, PRESENTATION1, PRESENTATION2, PRESENTATION3, PRESENTATION4, RESP_CHANGE, NO_RESP)
 % 02/07/2023  Adapted for OCC LEAMA Gabor Matrices (AH)
 
 % Check if Psychtoolbox is properly installed:
@@ -24,7 +24,9 @@ KbReleaseWait;
 %% Start loop
 try
     % Open 'windowrect' sized window on screen, with black [0] background color
-    win = Screen('OpenWindow', whichScreen, 0, windowrect);
+    if thisTrial == 1 
+        win = Screen('OpenWindow', whichScreen, 0, windowrect);
+    end
 
     % Open movie file
     movie = Screen('OpenMovie', win, moviename);
@@ -91,7 +93,7 @@ try
 
         % Update display:
         % Screen('Flip', win, [], 1);
-        Screen('Flip', whichScreen, [], 1)
+        Screen('Flip', whichScreen)
 
         % Release texture:
         Screen('Close', tex);

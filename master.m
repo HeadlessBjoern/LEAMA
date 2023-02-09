@@ -8,6 +8,9 @@
 clear all;
 close all;
 clc;
+try
+    Screen('CloseAll');
+end
 rootFilepath = pwd; % Retrieve the present working directory
 
 % define paths
@@ -26,17 +29,19 @@ addpath(FUNS_PATH)
 % manage screens
 screenSettings
 
-%% Collect ID and Age  
+    AssertOpenGL;
+
+%% Collect ID and Age
 dialogID;
 
 %% Protect Matlab code from participant keyboard input
 ListenChar(2);
 
 %% Execute Tasks in randomized order
-TRAINING = 0; % Training is set to 0 to allow the code in GaborMatrices.m to be easily adapted to a training condition. 
+TRAINING = 0; % Training is set to 0 to allow the code in GaborMatrices.m to be easily adapted to a training condition.
 BLOCK = 1;
-TASK = 'GaborMatrices';
-GaborMatrices;
+TASK = 'Gratings';
+Gratings;
 
 %% Allow keyboard input into Matlab code
 ListenChar(0);
