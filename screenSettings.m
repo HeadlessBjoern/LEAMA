@@ -13,10 +13,18 @@ Screen('Screens') % sanity check, whether 2 screens detected
 % Set Screen to run experiment on
 whichScreen = 1;   
 
-% set resolution and refresh rate
+% Set resolution and refresh rate
 screenWidth = 800;
 screenHeight = 600;
 refreshRate = 100;
 SetResolution(whichScreen, screenWidth, screenHeight, []);
 Screen('ConfigureDisplay', 'Scanout', whichScreen, 0, [], [], refreshRate); % refresh rate of 100hz (only for Linux)
 par.BGcolor = 192;
+
+% Set screen background color
+white = WhiteIndex(whichScreen);
+black = BlackIndex(whichScreen);
+gray = round((white+black)/2);
+
+
+

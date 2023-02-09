@@ -26,7 +26,7 @@ stimulus.regionEccentricity_dva = 3;     % Eccentricity of regions from central 
 % Set up color parameters
 stimulus.nColors = 2;                   % Number of colors used in the experiment
 color.white = [255, 255, 255];
-color.grey = [192, 192, 192];
+color.grey = [128, 128, 128];           % CHECK IF EXACT SAME GREY LIKE BACKGROUND OF GRATINGS
 color.textVal = [1 0 0];                % Color of text (0 = black, 1 0 0 = red)
  
 % Set up text parameters
@@ -96,14 +96,13 @@ Screen('Preference', 'SkipSyncTests', 2);
 % Start the movie now if requested
 moviePtr = Screen('CreateMovie', ptbWindow, 'videoCFI.mp4');
 
-%% 
-superText = '+';
+
 % Drawing loop
 while ~KbCheck
-        Screen('DrawLines',ptbWindow,fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2); % Draw fixation cross
-%     Screen('FillRect',ptbWindow,[.7 .7 .7]); 
-%     DrawFormattedText(ptbWindow,superText,'center','center',color.textVal);
-    Screen('Flip', ptbWindow) 
+    Screen('DrawLines',ptbWindow,fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2); % Draw fixation cross
+    %     Screen('FillRect',ptbWindow,[.7 .7 .7]);
+    %     DrawFormattedText(ptbWindow,superText,'center','center',color.textVal);
+    Screen('Flip', ptbWindow)
     Screen('AddFrameToMovie', ptbWindow, winRect, [], moviePtr);
 end
  

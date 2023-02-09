@@ -277,7 +277,7 @@ for thisTrial = 1:experiment.nTrials
 
     % Open window for movie (purple loading screen)
     if thisTrial == 1
-        win = Screen('OpenWindow', whichScreen, gray, windowrect); % CHECK IF GRAY BACKGROUND WORKS
+        win = Screen('OpenWindow', whichScreen, 0, windowrect);
     end
 
     %% Open second movie file:
