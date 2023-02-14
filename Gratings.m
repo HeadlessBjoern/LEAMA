@@ -232,15 +232,15 @@ for thisTrial = 1:experiment.nTrials
     elseif mod(thisTrial,2) == 0
         % Stimulus trial
         if videoSequence(thisTrial/2) == 1
-            moviename = [ MOV_PATH '/high.mp4' ];
+            moviename = [ MOV_PATH '/high_1100.mp4' ];
         elseif videoSequence(thisTrial/2) == 2
-            moviename = [ MOV_PATH '/high_vertical.mp4' ];
+            moviename = [ MOV_PATH '/high_vertical_1100.mp4' ];
         elseif videoSequence(thisTrial/2) == 3
-            moviename = [ MOV_PATH '/low.mp4' ];
+            moviename = [ MOV_PATH '/low_1100.mp4' ];
         elseif videoSequence(thisTrial/2) == 4
-            moviename = [ MOV_PATH '/low_vertical.mp4' ];
+            moviename = [ MOV_PATH '/low_vertical_1100.mp4' ];
         end
-        moviename = [ MOV_PATH '/high_vertical_1500.mp4' ];
+%         moviename = [ MOV_PATH '/high_vertical_1000.mp4' ];
     end
 
     %% Start trial
@@ -355,7 +355,7 @@ for thisTrial = 1:experiment.nTrials
     keyFlags = zeros(1,256); % An array of zeros
     keyFlags(spaceKeyCode) = 1; % Monitor only spaces
     % gki = GetKeyboardIndices;
-    gki = 10; % '10' hardcoded, corresponds to keyboard in experimental room
+    gki = 8; % '10' hardcoded, corresponds to keyboard in experimental room
     KbQueueCreate(gki, keyFlags); % Initialize the Queue
 
     % Set video duration 

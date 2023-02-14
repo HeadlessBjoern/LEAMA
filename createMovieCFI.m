@@ -7,7 +7,7 @@ whichScreen = 1;
 % Set up equipment parameters
 equipment.viewDist = 800;               % Viewing distance in millimetres
 equipment.ppm = 3.6;                    % Pixels per millimetre !! NEEDS TO BE SET. USE THE MeasureDpi FUNCTION !!
-equipment.greyVal = .5;
+equipment.greyVal = .48;
 equipment.blackVal = 0;
 equipment.whiteVal = 1;
 equipment.gammaVals = [1 1 1];          % The gamma values for color calibration of the monitor
@@ -26,7 +26,7 @@ stimulus.regionEccentricity_dva = 3;     % Eccentricity of regions from central 
 % Set up color parameters
 stimulus.nColors = 2;                   % Number of colors used in the experiment
 color.white = [255, 255, 255];
-color.grey = [128, 128, 128];           % CHECK IF EXACT SAME GREY LIKE BACKGROUND OF GRATINGS
+color.grey = [120, 120, 120];           % CHECK IF EXACT SAME GREY LIKE BACKGROUND OF GRATINGS
 color.textVal = [1 0 0];                % Color of text (0 = black, 1 0 0 = red)
  
 % Set up text parameters
