@@ -1,6 +1,6 @@
 %% DriftDemo6 editet (high contrast, slow)
 
-function DriftDemo6_highCslow(angle, cyclespersecond, f)
+function DriftDemo6_lowCslow(angle, cyclespersecond, f)
 % function DriftDemo6(angle, cyclespersecond, f)
 % ___________________________________________________________________
 %
@@ -65,7 +65,7 @@ if nargin < 1 || isempty(angle)
     angle=30;
 end;
 
-movieDurationSecs=15; % Abort demo after 60 seconds.
+movieDurationSecs=5; % Abort demo after 60 seconds.
 texsize=150; % Half-Size of the grating image.
 
 try
@@ -80,17 +80,18 @@ try
 
     % Round gray to integral number, to avoid roundoff artifacts with some
     % graphics cards:
-    gray=round((white+black)/2);
+    gray = round((white+black)/2);
 
-    %This makes sure that on floating point framebuffers we still get a
-    %well defined gray. It isn't strictly neccessary in this demo:
+    % This makes sure that on floating point framebuffers we still get a
+    % well defined gray. It isn't strictly neccessary in this demo:
     if gray == white
       gray=white / 2;
     end
     inc=white-gray;
 
-    % Open a double buffered fullscreen window with a gray background:ö
-    w = Screen('OpenWindow', screenNumber, gray);
+    % Open a double buffered fullscreen window with a gray background:
+    lightergray = gray+40;
+    w =Screen('OpenWindow',screenNumber, lightergray);
 
     % Make sure this GPU supports shading at all:
     AssertGLSL;
@@ -112,7 +113,7 @@ try
 
     % Create circular aperture for the alpha-channel:
     [x,y]=meshgrid(-texsize:texsize, -texsize:texsize);
-    circle = white * (x.^2 + y.^2 <= (texsize)^2);
+    circle = gray * (x.^2 + y.^2 <= (texsize)^2);
 
     % Set 2nd channel (the alpha channel) of 'grating' to the aperture
     % defined in 'circle':
@@ -123,9 +124,6 @@ try
     % texture shader to it:
     gratingtex1 = Screen('MakeTexture', w, grating , [], [], [], [], glsl);
 
-
-
-    
     % Build a second drifting grating texture, this time half the texsize
     % of the 1st texture:
     texsize = ceil(texsize/2);
@@ -147,10 +145,10 @@ try
     gratingtex2 = Screen('MakeTexture', w, grating, [], [], [], [], glsl);
     
     % Definition of the drawn source rectangle on the screen:
-    srcRect = [0 0 visiblesize visiblesize];
+    srcRect=[0 0 visiblesize visiblesize];
 
     % Definition of the drawn source rectangle on the screen:
-    src2Rect = [0 0 visible2size visible2size];
+    src2Rect=[0 0 visible2size visible2size];
 
     % Query duration of monitor refresh interval:
     ifi=Screen('GetFlipInterval', w);
@@ -174,11 +172,9 @@ try
     vblendtime = vbl + movieDurationSecs;
     i=0;
 
-
     %% Fixation cross preparation
     FixationCross;
-
-
+    
     %% Animation loop: Run until timeout or keypress.
     while (vbl < vblendtime) && ~KbCheck
         
@@ -200,10 +196,7 @@ try
 
         % Flip 'waitframes' monitor refresh intervals after last redraw.
         vbl = Screen('Flip', w, vbl + (waitframes - 0.5) * ifi);
-
-
-    end
-
+    end;
 
     % The same commands wich close onscreen and offscreen windows also close textures.
     sca;
