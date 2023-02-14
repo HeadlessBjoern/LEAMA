@@ -48,7 +48,7 @@ PsychImaging('AddTask', 'General', 'NormalizedHighresColorRange');
 Screen('Preference', 'SkipSyncTests', 0); % For linux
 
 % Window set-up
-[ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
+[ptbWindow, winRect] = PsychImaging('OpenWindow', screenID);
 PsychColorCorrection('SetEncodingGamma', ptbWindow, equipment.gammaVals);
 [screenWidth, screenHeight] = RectSize(winRect);
 screenCentreX = round(screenWidth/2);
