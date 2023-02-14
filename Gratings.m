@@ -240,7 +240,7 @@ for thisTrial = 1:experiment.nTrials
         elseif videoSequence(thisTrial/2) == 4
             moviename = [ MOV_PATH '/low_vertical.mp4' ];
         end
-%         moviename = [ MOV_PATH '/high-vertical_small.mp4' ];
+        moviename = [ MOV_PATH '/high_vertical_1500.mp4' ];
     end
 
     %% Start trial
