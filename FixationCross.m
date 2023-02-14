@@ -10,9 +10,9 @@ equipment.gammaVals = [1 1 1];
 
 % Set up stimulus parameters Fixation
 stimulus.fixationOn = 1;                % Toggle fixation on (1) or off (0)
-stimulus.fixationSize_dva = 2;          % Size of fixation cross in degress of visual angle (smaller version: 1.5)
-stimulus.fixationColor = [1 0 0];  % Color of fixation cross (1 = white, 0 = black, [1 0 0] = red, [1 0.05 0.5] = pink)
-stimulus.fixationLineWidth = 1;         % Line width of fixation cross (thicker version: 1.5)
+stimulus.fixationSize_dva = 1;          % Size of fixation cross in degress of visual angle (smaller version: 1.5)
+stimulus.fixationColor = [1 0 0];       % Color of fixation cross (1 = white, 0 = black, [1 0 0] = red, [1 0.05 0.5] = pink)
+stimulus.fixationLineWidth = 6;         % Line width of fixation cross (thicker version: 1.5)
 
 % Location
 stimulus.regionHeight_dva = 7.3;         % Height of the region
@@ -49,7 +49,7 @@ fixCoords = [fixHorizontal; fixVertical];
 
 
 % Trial run
-% Screen('DrawLines', w, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2);
-% Screen('Flip', w)
+Screen('DrawLines', w, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2);
+Screen('Flip', w)
 
 
