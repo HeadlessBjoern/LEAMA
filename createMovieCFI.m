@@ -7,7 +7,7 @@ whichScreen = 1;
 % Set up equipment parameters
 equipment.viewDist = 800;               % Viewing distance in millimetres
 equipment.ppm = 3.6;                    % Pixels per millimetre !! NEEDS TO BE SET. USE THE MeasureDpi FUNCTION !!
-equipment.greyVal = .48;
+equipment.greyVal = .47;
 equipment.blackVal = 0;
 equipment.whiteVal = 1;
 equipment.gammaVals = [1 1 1];          % The gamma values for color calibration of the monitor
