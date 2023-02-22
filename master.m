@@ -1,4 +1,4 @@
-%% Master script for the OCC (Lea MA) study
+        %% Master script for the OCC (Lea MA) study
 
 % - Gabor matrices (400 trials)
 
@@ -22,17 +22,20 @@ MOV_PATH = '/home/methlab/Desktop/LEAMA'; % Folder with movie files
 
 % make data dir, if doesn't exist yet
 mkdir(DATA_PATH)
-
+   
 % add path to folder with functions
 addpath(FUNS_PATH)
 
 % manage screens
 screenSettings
 
-    AssertOpenGL;
+AssertOpenGL;
 
 %% Collect ID and Age
 dialogID;
+
+%% Check keyboard number for GKI
+dialogGKI;
 
 %% Protect Matlab code from participant keyboard input
 ListenChar(2);

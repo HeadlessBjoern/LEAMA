@@ -11,7 +11,7 @@ equipment.gammaVals = [1 1 1];
 % Set up stimulus parameters Fixation
 stimulus.fixationOn = 1;                % Toggle fixation on (1) or off (0)
 stimulus.fixationSize_dva = 1;          % Size of fixation cross in degress of visual angle (smaller version: 1.5)
-stimulus.fixationColor = [1 0 0];       % Color of fixation cross (1 = white, 0 = black, [1 0 0] = red, [1 0.05 0.5] = pink)
+stimulus.fixationColor = [0.72 0.14 0.14];       % Color of fixation cross (1 = white, 0 = black, [1 0 0] = red, [1 0.05 0.5] = pink)
 stimulus.fixationLineWidth = 6;         % Line width of fixation cross (thicker version: 1.5)
 
 % Location

@@ -1,6 +1,6 @@
-%% Gabor Matrices
+%% Gratings
 %
-% This script executes the paradigm with Gabor Matrices of Lea's MA.
+% This script executes the paradigm with Gratings of Lea's MA.
 %
 % This code requires PsychToolbox. https://psychtoolbox.org
 % This was tested with PsychToolbox version 3.0.15, and with MATLAB R2022a.
@@ -26,12 +26,12 @@ PRESENTATION1 = 21; % trigger for presentation of high skewed matrix
 PRESENTATION2 = 22; % trigger for presentation of high vertical matrix
 PRESENTATION3 = 23; % trigger for presentation of low skewed matrix
 PRESENTATION4 = 24; % trigger for presentation of low vertical matrix
-STIMOFF = 29; % trigger for change of digit to cfi
+STIMOFF = 29; % trigger for change of grating to cfi
 BLOCK0 = 39; % trigger for start of training block
 BLOCK1 = 31; % trigger for start of task (block)
 ENDBLOCK0 = 49; % trigger for end of training block
 ENDBLOCK1 = 41; % trigger for end of task (block)
-RESP_CHANGE = 87; % trigger for response yes (spacebar)
+RESP = 87; % trigger for response yes (spacebar)
 NO_RESP = 88; % trigger for response no (no input)
 RESP_WRONG = 89; % trigger for wrong keyboard input response
 TASK_END = 90;
@@ -39,9 +39,12 @@ TASK_END = 90;
 % Set up experiment parameters
 % Number of trials for the experiment
 if TRAINING == 1
-    experiment.nTrials = 12;
+    experiment.nGratings = 6;
+    experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
 else
-    experiment.nTrials = 800;           % 1 blocks x 400 trials + 400 x fixation crosses = 800 trials
+    %  nGratings = 400;
+    experiment.nGratings = 8;
+    experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
 end
 
 % Set up equipment parameters
@@ -79,18 +82,20 @@ text.color = 0;                         % Color of text (0 = black)
 % Define startExperimentText
 if TRAINING == 1
     loadingText = 'Loading training task...';
-    startExperimentText = ['Training task. \n\n' ...
+    startExperimentText = ['Training task: \n\n' ...
         'You will see a series of gratings. \n\n' ...
-        'Your task is to press SPACE if you see a grating with a vertical orientation. \n\n' ...
+        'Your task is to press SPACE if you see \n\n' ...
+        'a grating with a vertical orientation. \n\n' ...
         'Otherwise, do not press any button. \n\n' ...
         'Please always use your right hand.' ...
         '\n\n Don''t worry, you can do a training sequence in the beginning. \n\n' ...
         '\n\n Press any key to continue.'];
 elseif TRAINING == 0
     loadingText = 'Loading test task...';
-    startExperimentText = ['Test task. \n\n' ...
+    startExperimentText = ['Test task: \n\n' ...
         'You will see a series of gratings. \n\n' ...
-        'Your task is to press SPACE if you see a grating with a vertical orientation. \n\n' ...
+        'Your task is to press SPACE if you see \n\n' ...
+        'a grating with a vertical orientation. \n\n' ...
         'Otherwise, do not press any button. \n\n' ...
         'Please always use your right hand.' ...
         '\n\n Press any key to continue.'];
@@ -152,20 +157,19 @@ fixCoords = [fixHorizontal; fixVertical];
 
 % Create data structure for preallocating data
 data = struct;
-data.digitSequence = 0;
-data.trialMatch(1:experiment.nTrials) = NaN;
-data.allResponses(1:experiment.nTrials) = NaN;
-data.allCorrect(1:experiment.nTrials) = NaN;
-data.stims(1:experiment.nTrials) = NaN;
+data.trialMatch(1:experiment.nGratings) = NaN;
+data.allResponses(1:experiment.nGratings) = NaN;
+data.allCorrect(1:experiment.nGratings) = NaN;
 
 % Preallocate reaction time varible
-reactionTime(1:experiment.nTrials) = 0;
+reactionTime(1:experiment.nGratings) = 0;
 
 % Define videoSequence and save
 ShuffleVideos;
 data.videoSequence = videoSequence;
 
-% Show task instruction text
+
+%% Show task instruction text
 DrawFormattedText(ptbWindow,startExperimentText,'center','center',color.textVal);
 startExperimentTime = Screen('Flip',ptbWindow);
 disp('Participant is reading the instructions.');
@@ -223,30 +227,32 @@ Rec2plot = CenterRectOnPointd(baseRect, 0, screenHeight - 10);
 noFixation = 0;
 
 for thisTrial = 1:experiment.nTrials
+    %% Define thisGrating for usage as index
+    thisGrating = thisTrial/2;
+
 
     %% Define stimulus or CFI trial
     if mod(thisTrial,2) == 1
         % CFI trial
         moviename = '/home/methlab/Desktop/LEAMA/videoCFI.mp4';
-    
+
     elseif mod(thisTrial,2) == 0
         % Stimulus trial
-        if videoSequence(thisTrial/2) == 1
+        if videoSequence(thisGrating) == 1
             moviename = [ MOV_PATH '/high_1100.mp4' ];
-        elseif videoSequence(thisTrial/2) == 2
+        elseif videoSequence(thisGrating) == 2
             moviename = [ MOV_PATH '/high_vertical_1100.mp4' ];
-        elseif videoSequence(thisTrial/2) == 3
+        elseif videoSequence(thisGrating) == 3
             moviename = [ MOV_PATH '/low_1100.mp4' ];
-        elseif videoSequence(thisTrial/2) == 4
+        elseif videoSequence(thisGrating) == 4
             moviename = [ MOV_PATH '/low_vertical_1100.mp4' ];
         end
-%         moviename = [ MOV_PATH '/high_vertical_1000.mp4' ];
     end
 
     %% Start trial
 
     if mod(thisTrial,2) == 0
-        disp(['Start of Trial ' num2str(thisTrial/2)]); % Output of current trial iteration
+        disp(['Start of Trial ' num2str(thisGrating)]); % Output of current trial iteration
     end
 
     %     if thisTrial == 1
@@ -268,21 +274,22 @@ for thisTrial = 1:experiment.nTrials
     %     Screen('FillRect',ptbWindow,[1, 0, 0], Rec2plot);
 
     %% Open psychtoolbox window
+    % this is obsolete because it is already opened for the
+    % startExperimentText; but maybe we need it later so I leave it in here
+    % for now
 
     % Set windowrect for MovieDisplay
-    windowrect = [];
-    
-    % Wait for release of possible keyboard presses
-    KbReleaseWait;
+    % windowrect = [];
 
     % Open window for movie (purple loading screen)
-    if thisTrial == 1
-        win = Screen('OpenWindow', whichScreen, gray, windowrect); % CHECK IF GRAY BACKGROUND WORKS
-    end
+    %     if thisTrial == 1
+    %         win = Screen('OpenWindow', whichScreen, gray, windowrect); % CHECK IF GRAY BACKGROUND WORKS
+    %     end
+
 
     %% Open second movie file:
     %     moviename = '/home/methlab/Desktop/LEAMA/exampleMovieType2.mp4';
-    %     movie = Screen('OpenMovie', win, moviename);
+    %     movie = Screen('OpenMovie', ptbWindow, moviename);
     %
     %     % Start playback engine:
     %     Screen('PlayMovie', movie, 1);
@@ -290,7 +297,7 @@ for thisTrial = 1:experiment.nTrials
     %     maxTime = GetSecs + 2;
     %     while 1
     %         % Wait for next movie frame, retrieve texture handle to it
-    %         tex = Screen('GetMovieImage', win, movie);
+    %         tex = Screen('GetMovieImage', ptbWindow, movie);
     %
     %         % Valid texture returned? A negative value means end of movie reached:
     %         %         if tex<=0
@@ -303,9 +310,9 @@ for thisTrial = 1:experiment.nTrials
     %         end
     %
     %         % Draw the new texture immediately to screen:
-    %         Screen('DrawTexture', win, tex);
+    %         Screen('DrawTexture', ptbWindow, tex);
     %         % Update display:
-    %         Screen('Flip', win);
+    %         Screen('Flip', ptbWindow);
     %         % Release texture:
     %         Screen('Close', tex);
     %     end
@@ -314,11 +321,15 @@ for thisTrial = 1:experiment.nTrials
     %     Screen('PlayMovie', movie, 0);
     %     % Close movie:
     %     Screen('CloseMovie', movie);
+    
+
+    %% Wait for release of possible keyboard presses
+    KbReleaseWait;
 
     %% Play movie file with moviename
-   
+
     % Open movie file:
-    movie = Screen('OpenMovie', win, moviename);
+    movie = Screen('OpenMovie', ptbWindow, moviename);
 
     % Start playback engine:
     Screen('PlayMovie', movie, 1);
@@ -329,13 +340,13 @@ for thisTrial = 1:experiment.nTrials
         TRIGGER = FIXATION;
     elseif mod(thisTrial,2) == 0
         % Stimulus trial
-        if videoSequence(thisTrial/2) == 1
+        if videoSequence(thisGrating) == 1
             TRIGGER = PRESENTATION1;
-        elseif videoSequence(thisTrial/2) == 2
+        elseif videoSequence(thisGrating) == 2
             TRIGGER = PRESENTATION2;
-        elseif videoSequence(thisTrial/2) == 3
+        elseif videoSequence(thisGrating) == 3
             TRIGGER = PRESENTATION3;
-        elseif videoSequence(thisTrial/2) == 4
+        elseif videoSequence(thisGrating) == 4
             TRIGGER = PRESENTATION4;
         end
     end
@@ -354,11 +365,11 @@ for thisTrial = 1:experiment.nTrials
     % Create keyboard monitoring queue with target buttons
     keyFlags = zeros(1,256); % An array of zeros
     keyFlags(spaceKeyCode) = 1; % Monitor only spaces
-    % gki = GetKeyboardIndices;
-    gki = 8; % '10' hardcoded, corresponds to keyboard in experimental room
+    % GetKeyboardIndices; % For checking keyboard number
+    %  gki = 10; % has to be checked every time,that's why we created a dialog window now
     KbQueueCreate(gki, keyFlags); % Initialize the Queue
 
-    % Set video duration 
+    % Set video duration
     if mod(thisTrial,2) == 1
         % CFI trial
         timing.cfi = (randsample(2000:6000, 1))/1000; % Randomize the jittered central fixation interval on trial
@@ -375,39 +386,39 @@ for thisTrial = 1:experiment.nTrials
     % Playback loop (presenting frames of the movie, each after another)
     while 1
         % Wait for next movie frame, retrieve texture handle to it
-        tex = Screen('GetMovieImage', win, movie);
+        tex = Screen('GetMovieImage', ptbWindow, movie);
 
         % stop the video if the video duration time has passed
         runTime = GetSecs;
-        if runTime >= maxTime 
+        if runTime >= maxTime
             break;
         end
 
         % Draw the new texture immediately to screen:
-        Screen('DrawTexture', win, tex);
+        Screen('DrawTexture', ptbWindow, tex);
         % Update display:
-        Screen('Flip', win);
+        Screen('Flip', ptbWindow);
         % Release texture:
         Screen('Close', tex);
     end
 
     % Stop keyboard monitoring
     KbQueueStop(gki);
-    
+
     % Get infos for key presses during KbQueue (only for Gratings)
-    [~, firstPress, ~, ~, ~] = KbQueueCheck(gki);
+    [pressed, firstPress, ~, ~, ~] = KbQueueCheck(gki);
     if mod(thisTrial,2) == 0
         % Get and save reaction time for each trial
-        if firstPress > 0
-            reactionTime(thisTrial/2) = firstPress - queueStartTime;
-        elseif firstPress == 0
-            reactionTime(thisTrial/2) = NaN;
+        if firstPress(spaceKeyCode) > 0
+            reactionTime(thisGrating) = firstPress(spaceKeyCode) - queueStartTime;
+        elseif firstPress(spaceKeyCode) == 0
+            reactionTime(thisGrating) = NaN;
         end
     end
-    
+
     % Remove all unprocessed events from the queue and zeros out any already scored events
     KbQueueFlush(gki);
-    
+
     % Release queue-associated resources
     KbQueueRelease(gki);
 
@@ -415,13 +426,26 @@ for thisTrial = 1:experiment.nTrials
     % Save responses as triggers (only for Gratings, always sent out after video is stopped)
     if mod(thisTrial,2) == 0
         % Save responses (RESPONSE TIMESTAMPS ARE WRONG --> use reactionTime) and send triggers
-        if firstPress > 0
-            data.allResponses(thisTrial/2) = spaceKeyCode;
-            TRIGGER = RESP_CHANGE;
-        elseif firstPress == 0
-            data.allResponses(thisTrial/2) = 0;
+        if pressed > 0
+            data.allResponses(thisGrating) = spaceKeyCode;
+            TRIGGER = RESP;
+        elseif pressed == 0
+            data.allResponses(thisGrating) = 0;
             TRIGGER = NO_RESP;
         end
+    end
+
+    if TRAINING == 1
+        %     EThndl.sendMessage(TRIGGER);
+        Eyelink('Message', num2str(TRIGGER));
+        Eyelink('command', 'record_status_message "END BLOCK"');
+        disp('End of Training Block.');
+    else
+        %     EThndl.sendMessage(TRIGGER);
+        Eyelink('Message', num2str(TRIGGER));
+        Eyelink('command', 'record_status_message "END BLOCK"');
+        sendtrigger(TRIGGER,port,SITE,stayup);
+        disp(['End of Block ' num2str(BLOCK)]);
     end
 
     % Stop playback:
@@ -431,28 +455,27 @@ for thisTrial = 1:experiment.nTrials
 
 
 
-
     if mod(thisTrial,2) == 0
         % Check if response was correct (only for Gratings)
-        if videoSequence(thisTrial/2) == 1 && data.allResponses(thisTrial/2) == 0 % Skewed + NO button press = correct answer
-            data.allCorrect(thisTrial/2) = 1;
-        elseif videoSequence(thisTrial/2) == 2 && data.allResponses(thisTrial/2) == spaceKeyCode % Vert + button press
-            data.allCorrect(thisTrial/2) = 1;
-        elseif videoSequence(thisTrial/2) == 3 && data.allResponses(thisTrial/2) == 0 % Skewed + NO button press = correct answer
-            data.allCorrect(thisTrial/2) = 1;
-        elseif videoSequence(thisTrial/2) == 4 && data.allResponses(thisTrial/2) == spaceKeyCode % Vert + button press = correct answer
-            data.allCorrect(thisTrial/2) = 1;
+        if videoSequence(thisGrating) == 1 && data.allResponses(thisGrating) == 0 % Skewed + NO button press = correct answer
+            data.allCorrect(thisGrating) = 1;
+        elseif videoSequence(thisGrating) == 2 && data.allResponses(thisGrating) == spaceKeyCode % Vert + button press
+            data.allCorrect(thisGrating) = 1;
+        elseif videoSequence(thisGrating) == 3 && data.allResponses(thisGrating) == 0 % Skewed + NO button press = correct answer
+            data.allCorrect(thisGrating) = 1;
+        elseif videoSequence(thisGrating) == 4 && data.allResponses(thisGrating) == spaceKeyCode % Vert + button press = correct answer
+            data.allCorrect(thisGrating) = 1;
         else
-            data.allCorrect(thisTrial/2) = 0; % Wrong response
+            data.allCorrect(thisGrating) = 0; % Wrong response
         end
-    
+
         % Display (in-)correct response in CW (only for Gratings)
-        if data.allCorrect(thisTrial/2) == 1
+        if data.allCorrect(thisGrating) == 1
             feedbackText = 'Correct!';
-        elseif data.allCorrect(thisTrial/2) == 0
+        elseif data.allCorrect(thisGrating) == 0
             feedbackText = 'Incorrect!';
         end
-        disp(['Response to Trial ' num2str(thisTrial/2) ' is ' feedbackText]);
+        disp(['Response to Trial ' num2str(thisGrating) ' is ' feedbackText]);
     end
 
 
@@ -491,7 +514,7 @@ for thisTrial = 1:experiment.nTrials
     %     Screen('DrawLines',ptbWindow,fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2); % Draw fixation cross
     %     Screen('Flip', ptbWindow, [], 1);
 
-%% End for loop over all videos
+    %% End for loop over all videos
 end
 
 
@@ -611,7 +634,7 @@ trigger.BLOCK0 = BLOCK0;
 trigger.BLOCK1 = BLOCK1;
 trigger.ENDBLOCK0 = ENDBLOCK0;
 trigger.ENDBLOCK1 = ENDBLOCK1;
-trigger.RESP_YES = RESP_CHANGE;
+trigger.RESP_YES = RESP;
 trigger.RESP_NO = NO_RESP;
 trigger.RESP_WRONG = RESP_WRONG;
 trigger.TASK_END = TASK_END;
@@ -632,98 +655,98 @@ catch
 end
 
 % Show break instruction text
-if TRAINING == 1
-    if percentTotalCorrect >= THRESH
-        breakInstructionText = 'Well done! \n\n Press any key to start the actual task.';
-    else
-        breakInstructionText = ['Score too low! ' num2str(percentTotalCorrect) ' % correct. ' ...
-            '\n\n Press any key to repeat the training task.'];
-    end
-elseif BLOCK == 1 && TRAINING == 0
-    breakInstructionText = ['End of the Task! ' ...
-        '\n\n Press any key to view your stats.'];
-end
-DrawFormattedText(ptbWindow,breakInstructionText,'center','center',color.textVal);
-Screen('Flip',ptbWindow);
-waitResponse = 1;
-while waitResponse
-    [time, keyCode] = KbWait(-1,2);
-    waitResponse = 0;
-end
+% if TRAINING == 1
+%     if percentTotalCorrect >= THRESH
+%         breakInstructionText = 'Well done! \n\n Press any key to start the actual task.';
+%     else
+%         breakInstructionText = ['Score too low! ' num2str(percentTotalCorrect) ' % correct. ' ...
+%             '\n\n Press any key to repeat the training task.'];
+%     end
+% elseif BLOCK == 1 && TRAINING == 0
+%     breakInstructionText = ['End of the Task! ' ...
+%         '\n\n Press any key to view your stats.'];
+% end
+% DrawFormattedText(ptbWindow,breakInstructionText,'center','center',color.textVal);
+% Screen('Flip',ptbWindow);
+% waitResponse = 1;
+% while waitResponse
+%     [time, keyCode] = KbWait(-1,2);
+%     waitResponse = 0;
+% end
 
 % Wait at least 30 Seconds between Blocks (only after Block 1 has finished, not after Block 2)
-if TRAINING == 1 && percentTotalCorrect < THRESH
-    waitTime = 30;
-    intervalTime = 1;
-    timePassed = 0;
-    printTime = 30;
-
-    waitTimeText = ['Please wait for ' num2str(printTime) ' seconds...' ...
-        ' \n\n ' ...
-        ' \n\n You can repeat the training task afterwards.'];
-
-    DrawFormattedText(ptbWindow,waitTimeText,'center','center',color.textVal);
-    Screen('Flip',ptbWindow);
-
-    while timePassed < waitTime
-        pause(intervalTime);
-        timePassed = timePassed + intervalTime;
-        printTime = waitTime - timePassed;
-        waitTimeText = ['Please wait for ' num2str(printTime) ' seconds...' ...
-            ' \n\n ' ...
-            ' \n\n You can repeat the training task afterwards.'];
-        DrawFormattedText(ptbWindow,waitTimeText,'center','center',color.textVal);
-        Screen('Flip',ptbWindow);
-    end
-elseif BLOCK == 1 && TRAINING == 1
-    waitTime = 30;
-    intervalTime = 1;
-    timePassed = 0;
-    printTime = 30;
-
-    waitTimeText = ['Please wait for ' num2str(printTime) ' seconds...' ...
-        ' \n\n ' ...
-        ' \n\n The Gabor Matrix task will start afterwards.'];
-
-    DrawFormattedText(ptbWindow,waitTimeText,'center','center',color.textVal);
-    Screen('Flip',ptbWindow);
-
-    while timePassed < waitTime
-        pause(intervalTime);
-        timePassed = timePassed + intervalTime;
-        printTime = waitTime - timePassed;
-        waitTimeText = ['Please wait for ' num2str(printTime) ' seconds...' ...
-            ' \n\n ' ...
-            ' \n\n The Gabor Matrix task will start afterwards.'];
-        DrawFormattedText(ptbWindow,waitTimeText,'center','center',color.textVal);
-        Screen('Flip',ptbWindow);
-    end
-end
+% if TRAINING == 1 && percentTotalCorrect < THRESH
+%     waitTime = 30;
+%     intervalTime = 1;
+%     timePassed = 0;
+%     printTime = 30;
+%
+%     waitTimeText = ['Please wait for ' num2str(printTime) ' seconds...' ...
+%         ' \n\n ' ...
+%         ' \n\n You can repeat the training task afterwards.'];
+%
+%     DrawFormattedText(ptbWindow,waitTimeText,'center','center',color.textVal);
+%     Screen('Flip',ptbWindow);
+%
+%     while timePassed < waitTime
+%         pause(intervalTime);
+%         timePassed = timePassed + intervalTime;
+%         printTime = waitTime - timePassed;
+%         waitTimeText = ['Please wait for ' num2str(printTime) ' seconds...' ...
+%             ' \n\n ' ...
+%             ' \n\n You can repeat the training task afterwards.'];
+%         DrawFormattedText(ptbWindow,waitTimeText,'center','center',color.textVal);
+%         Screen('Flip',ptbWindow);
+%     end
+% elseif BLOCK == 1 && TRAINING == 1
+%     waitTime = 30;
+%     intervalTime = 1;
+%     timePassed = 0;
+%     printTime = 30;
+%
+%     waitTimeText = ['Please wait for ' num2str(printTime) ' seconds...' ...
+%         ' \n\n ' ...
+%         ' \n\n The Grating task will start afterwards.'];
+%
+%     DrawFormattedText(ptbWindow,waitTimeText,'center','center',color.textVal);
+%     Screen('Flip',ptbWindow);
+%
+%     while timePassed < waitTime
+%         pause(intervalTime);
+%         timePassed = timePassed + intervalTime;
+%         printTime = waitTime - timePassed;
+%         waitTimeText = ['Please wait for ' num2str(printTime) ' seconds...' ...
+%             ' \n\n ' ...
+%             ' \n\n The Grating task will start afterwards.'];
+%         DrawFormattedText(ptbWindow,waitTimeText,'center','center',color.textVal);
+%         Screen('Flip',ptbWindow);
+%     end
+% end
 
 % Save total amount earned and display
-if BLOCK == 1 && TRAINING == 0
-    amountCHFextraTotal = sum(amountCHFextra);
-    saves.amountCHFextraTotal = amountCHFextraTotal;
-    format bank % Change format for display
-    endTextCash = ['Well done! You have completed the task.' ...
-        ' \n\n Because of your accuracy you have been awarded an additional ' num2str(amountCHFextraTotal) ' CHF in total.' ...
-        ' \n\n ' ...
-        ' \n\n ' num2str(percentTotalCorrect(1)) ' % accuracy earned you ' num2str(amountCHFextra(1)) ' CHF.' ...
-        ' \n\n ' ...
-        ' \n\n ' ...
-        ' \n\n Press any key to end the task.'];
-    DrawFormattedText(ptbWindow,endTextCash,'center','center',color.textVal); % Display output for participant
-    disp(['End of Block ' num2str(BLOCK) '. Participant ' num2str(subjectID) ' has earned CHF ' num2str(amountCHFextraTotal) ' extra in total.']);
-    statsCW = ['Participant' num2str(subjectID) ' earned ' num2str(amountCHFextra(1)) ' CHF for an accuracy of ' num2str(percentTotalCorrect(1)) '%'];
-    disp(statsCW)
-    format default % Change format back to default
-    Screen('Flip',ptbWindow);
-    waitResponse = 1;
-    while waitResponse
-        [time, keyCode] = KbWait(-1,2);
-        waitResponse = 0;
-    end
-end
+% if BLOCK == 1 && TRAINING == 0
+%     amountCHFextraTotal = sum(amountCHFextra);
+%     saves.amountCHFextraTotal = amountCHFextraTotal;
+%     format bank % Change format for display
+%     endTextCash = ['Well done! You have completed the task.' ...
+%         ' \n\n Because of your accuracy you have been awarded an additional ' num2str(amountCHFextraTotal) ' CHF in total.' ...
+%         ' \n\n ' ...
+%         ' \n\n ' num2str(percentTotalCorrect(1)) ' % accuracy earned you ' num2str(amountCHFextra(1)) ' CHF.' ...
+%         ' \n\n ' ...
+%         ' \n\n ' ...
+%         ' \n\n Press any key to end the task.'];
+%     DrawFormattedText(ptbWindow,endTextCash,'center','center',color.textVal); % Display output for participant
+%     disp(['End of Block ' num2str(BLOCK) '. Participant ' num2str(subjectID) ' has earned CHF ' num2str(amountCHFextraTotal) ' extra in total.']);
+%     statsCW = ['Participant' num2str(subjectID) ' earned ' num2str(amountCHFextra(1)) ' CHF for an accuracy of ' num2str(percentTotalCorrect(1)) '%'];
+%     disp(statsCW)
+%     format default % Change format back to default
+%     Screen('Flip',ptbWindow);
+%     waitResponse = 1;
+%     while waitResponse
+%         [time, keyCode] = KbWait(-1,2);
+%         waitResponse = 0;
+%     end
+% end
 
 %% Close Psychtoolbox window
 Screen('CloseAll');
