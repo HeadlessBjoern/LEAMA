@@ -1,5 +1,7 @@
 %% DriftDemo6 editet (high contrast, slow)
 
+
+
 function DriftDemo6_highCfast(angle, cyclespersecond, f)
 % function DriftDemo6(angle, cyclespersecond, f)
 % ___________________________________________________________________
@@ -189,6 +191,8 @@ try
 
         % Draw first grating texture, rotated by "angle":
         HideCursor;
+        
+        Screen('FillRect',w,[1, 1, 1], Rec2plot);
         Screen('DrawTexture', w, gratingtex1, srcRect, [], angle, [], [], [], [], [], [0, yoffset, 0, 0]);
         % Draw Fixation Cross
         Screen('DrawLines', w, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2);

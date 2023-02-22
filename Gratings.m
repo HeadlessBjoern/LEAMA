@@ -171,6 +171,7 @@ data.videoSequence = videoSequence;
 
 %% Show task instruction text
 DrawFormattedText(ptbWindow,startExperimentText,'center','center',color.textVal);
+Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
 startExperimentTime = Screen('Flip',ptbWindow);
 disp('Participant is reading the instructions.');
 waitResponse = 1;
@@ -216,13 +217,6 @@ else
 end
 HideCursor(whichScreen);
 
-% Set photodiode trigger
-baseRect = [0 0 15 15];
-Rec2plot = CenterRectOnPointd(baseRect, 0, screenHeight - 10);
-
-
-
-
 %% Experiment Loop
 noFixation = 0;
 
@@ -254,6 +248,9 @@ for thisTrial = 1:experiment.nTrials
     if mod(thisTrial,2) == 0
         disp(['Start of Trial ' num2str(thisGrating)]); % Output of current trial iteration
     end
+
+    Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+    Screen('Flip', ptbWindow);
 
     %     if thisTrial == 1
     %         Screen('DrawLines',ptbWindow,fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2); % Draw fixation cross
@@ -385,6 +382,7 @@ for thisTrial = 1:experiment.nTrials
 
     % Playback loop (presenting frames of the movie, each after another)
     while 1
+
         % Wait for next movie frame, retrieve texture handle to it
         tex = Screen('GetMovieImage', ptbWindow, movie);
 
@@ -397,6 +395,8 @@ for thisTrial = 1:experiment.nTrials
         % Draw the new texture immediately to screen:
         Screen('DrawTexture', ptbWindow, tex);
         % Update display:
+        Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+        Screen('DrawDots',ptbWindow, stimPos, stimDiameter, stimColor,[],1);
         Screen('Flip', ptbWindow);
         % Release texture:
         Screen('Close', tex);
