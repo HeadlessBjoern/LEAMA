@@ -373,7 +373,7 @@ for thisTrial = 1:experiment.nTrials
         maxTime = GetSecs + timing.cfi;
     elseif mod(thisTrial,2) == 0
         % Stimulus trial
-        maxTime = GetSecs + 2; % Set maxTime to max. 2 seconds from start of video
+        maxTime = GetSecs + 3; % Set maxTime to max. 2 seconds from start of video
     end
 
     % Start keyboard monitoring
