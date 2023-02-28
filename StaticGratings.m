@@ -367,7 +367,8 @@ for thisTrial = 1:experiment.nTrials
         maxTime = GetSecs + timing.cfi;
     elseif mod(thisTrial,2) == 0
         % Stimulus trial
-        maxTime = GetSecs + 2.5; % Set maxTime to max. 2 seconds from start of video
+        duration = 2.5;
+        maxTime = GetSecs + duration; % Set maxTime to max. 2 seconds from start of video
     end
 
     % Start keyboard monitoring
@@ -377,8 +378,6 @@ for thisTrial = 1:experiment.nTrials
     %% Display image of grating or movie of fixation cross
 
     if mod(thisTrial,2) == 0
-        whichScreen = 0;
-        [ptbWindow, winRect] = PsychImaging('OpenWindow', whichScreen);
         image = imread(ImageName);
         %     imageUint8 = im2uint8(image);
         textureIndex = Screen('MakeTexture', ptbWindow, image);
@@ -387,7 +386,7 @@ for thisTrial = 1:experiment.nTrials
         Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
         Screen('DrawDots',ptbWindow, stimPos, stimDiameter, stimColor,[],1);    
         Screen('Flip', ptbWindow);
-        WaitSecs(maxTime);
+        WaitSecs(duration);
     
     else
         %% Playback loop (presenting frames of the fixation cross movie, each after another)
@@ -464,13 +463,13 @@ for thisTrial = 1:experiment.nTrials
         sendtrigger(TRIGGER,port,SITE,stayup);
         disp(['End of Block ' num2str(BLOCK)]);
     end
+    if mod(thisTrial,2) == 0
+        % Stop playback:
+        Screen('PlayMovie', movie, 0);
+        % Close movie:
+        Screen('CloseMovie', movie);
 
-    % Stop playback:
-    Screen('PlayMovie', movie, 0);
-    % Close movie:
-    Screen('CloseMovie', movie);
-
-
+    end
 
     if mod(thisTrial,2) == 0
         % Check if response was correct (only for Gratings)
