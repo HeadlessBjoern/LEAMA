@@ -325,12 +325,6 @@ for thisTrial = 1:experiment.nTrials
 
     %% Play movie file with moviename
 
-    % Open movie file:
-    movie = Screen('OpenMovie', ptbWindow, moviename);
-
-    % Start playback engine:
-    Screen('PlayMovie', movie, 1);
-
     % Select fixation cross or grid videos
     if mod(thisTrial,2) == 1
         % CFI trial
@@ -380,27 +374,48 @@ for thisTrial = 1:experiment.nTrials
     KbQueueStart(gki);
     queueStartTime = GetSecs;
 
-    % Playback loop (presenting frames of the movie, each after another)
-    while 1
+    %% Display image of grating or movie of fixation cross
 
-        % Wait for next movie frame, retrieve texture handle to it
-        tex = Screen('GetMovieImage', ptbWindow, movie);
+    if mod(thisTrial,2) == 0
+        whichScreen = 0;
+        [ptbWindow, winRect] = PsychImaging('OpenWindow', whichScreen);
+        image = imread('images.jpeg');
+        %     imageUint8 = im2uint8(image);
+        textureIndex = Screen('MakeTexture', ptbWindow, image);
 
-        % stop the video if the video duration time has passed
-        runTime = GetSecs;
-        if runTime >= maxTime
-            break;
-        end
-
-        % Draw the new texture immediately to screen:
-        Screen('DrawTexture', ptbWindow, tex);
-        % Update display including photodiodes
-        Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-        Screen('DrawDots',ptbWindow, stimPos, stimDiameter, stimColor,[],1);
+        Screen('DrawTexture', ptbWindow, textureIndex);
         Screen('Flip', ptbWindow);
-        % Release texture:
-        Screen('Close', tex);
+        WaitSecs(2);
+    
+    else
+        %% Playback loop (presenting frames of the fixation cross movie, each after another)
+        % Open movie file:
+        movie = Screen('OpenMovie', ptbWindow, moviename);
+
+        % Start playback engine:
+        Screen('PlayMovie', movie, 1);
+        
+        while 1
+            % Wait for next movie frame, retrieve texture handle to it
+            tex = Screen('GetMovieImage', ptbWindow, movie);
+
+            % stop the video if the video duration time has passed
+            runTime = GetSecs;
+            if runTime >= maxTime
+                break;
+            end
+
+            % Draw the new texture immediately to screen:
+            Screen('DrawTexture', ptbWindow, tex);
+            % Update display including photodiodes
+            Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+            Screen('DrawDots',ptbWindow, stimPos, stimDiameter, stimColor,[],1);
+            Screen('Flip', ptbWindow);
+            % Release texture:
+            Screen('Close', tex);
+        end
     end
+
 
     % Stop keyboard monitoring
     KbQueueStop(gki);
