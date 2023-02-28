@@ -43,7 +43,7 @@ if TRAINING == 1
     experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
 else
     %  nGratings = 400;
-    experiment.nGratings = 8;
+    experiment.nGratings = 400;
     experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
 end
 
@@ -233,13 +233,13 @@ for thisTrial = 1:experiment.nTrials
     elseif mod(thisTrial,2) == 0
         % Stimulus trial
         if videoSequence(thisGrating) == 1
-            moviename = [ MOV_PATH '/high_1100.mp4' ];
+            ImageName = [ MOV_PATH '/tilt_high.png' ];
         elseif videoSequence(thisGrating) == 2
-            moviename = [ MOV_PATH '/high_vertical_1100.mp4' ];
+            ImageName = [ MOV_PATH '/vertical_high.png' ];
         elseif videoSequence(thisGrating) == 3
-            moviename = [ MOV_PATH '/low_1100.mp4' ];
+            ImageName = [ MOV_PATH '/tilt_low.png' ];
         elseif videoSequence(thisGrating) == 4
-            moviename = [ MOV_PATH '/low_vertical_1100.mp4' ];
+            ImageName = [ MOV_PATH '/vertical_low.png' ];
         end
     end
 
@@ -367,7 +367,7 @@ for thisTrial = 1:experiment.nTrials
         maxTime = GetSecs + timing.cfi;
     elseif mod(thisTrial,2) == 0
         % Stimulus trial
-        maxTime = GetSecs + 3; % Set maxTime to max. 2 seconds from start of video
+        maxTime = GetSecs + 2.5; % Set maxTime to max. 2 seconds from start of video
     end
 
     % Start keyboard monitoring
@@ -379,13 +379,15 @@ for thisTrial = 1:experiment.nTrials
     if mod(thisTrial,2) == 0
         whichScreen = 0;
         [ptbWindow, winRect] = PsychImaging('OpenWindow', whichScreen);
-        image = imread('images.jpeg');
+        image = imread(ImageName);
         %     imageUint8 = im2uint8(image);
         textureIndex = Screen('MakeTexture', ptbWindow, image);
 
         Screen('DrawTexture', ptbWindow, textureIndex);
+        Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+        Screen('DrawDots',ptbWindow, stimPos, stimDiameter, stimColor,[],1);    
         Screen('Flip', ptbWindow);
-        WaitSecs(2);
+        WaitSecs(maxTime);
     
     else
         %% Playback loop (presenting frames of the fixation cross movie, each after another)
