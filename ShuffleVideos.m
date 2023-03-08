@@ -1,13 +1,25 @@
-
 % Define proportions 
-N1_2 = 140; % 70%
-N3_4 = 60; % 30%
+N_look = 35; % 70%
+N_task = 15; % 30%
 
-% create list of N1_2 * 1, N1_2 * 2, N3_4 * 3, and N3_4 * 4
-videoselection = [zeros(N1_2,1) + 1; % maybe there's a simpler way to do this?
-    zeros(N1_2,1) + 2;
-    zeros(N3_4,1) + 3;
-    zeros(N3_4,1) + 4];
+% create list of N_look * 8 and N_task * 8
+videoselection = [
+    zeros(N_look,1) + 1; 
+    zeros(N_look,1) + 2;
+    zeros(N_look,1) + 3;
+    zeros(N_look,1) + 4;
+    zeros(N_look,1) + 5;
+    zeros(N_look,1) + 6;
+    zeros(N_look,1) + 7;
+    zeros(N_look,1) + 8;
+    zeros(N_task,1) + 9;
+    zeros(N_task,1) + 10;
+    zeros(N_task,1) + 11;
+    zeros(N_task,1) + 12;
+    zeros(N_task,1) + 13;
+    zeros(N_task,1) + 14;
+    zeros(N_task,1) + 15;
+    zeros(N_task,1) + 16];
 
 % Shuffle the initial list and save it
 rng(10) % 'set seed' so randperm always shuffles in the same way
