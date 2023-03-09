@@ -229,19 +229,19 @@ for thisTrial = 1:experiment.nTrials
     if mod(thisTrial,2) == 1
         % CFI trial
         moviename = '/home/methlab/Desktop/LEAMA/videoCFI.mp4';
+
+    elseif mod(thisTrial,2) == 0
+        % Stimulus trial
+        if videoSequence(thisGrating) == 1
+            ImageName = [ MOV_PATH '/tilt_high.png' ];
+        elseif videoSequence(thisGrating) == 2
+            ImageName = [ MOV_PATH '/vertical_high.png' ];
+        elseif videoSequence(thisGrating) == 3
+            ImageName = [ MOV_PATH '/tilt_low.png' ];
+        elseif videoSequence(thisGrating) == 4
+            ImageName = [ MOV_PATH '/vertical_low.png' ];
+        end
     end
-%     elseif mod(thisTrial,2) == 0
-%         % Stimulus trial
-%         if videoSequence(thisGrating) == 1
-%             ImageName = [ MOV_PATH '/tilt_high.png' ];
-%         elseif videoSequence(thisGrating) == 2
-%             ImageName = [ MOV_PATH '/vertical_high.png' ];
-%         elseif videoSequence(thisGrating) == 3
-%             ImageName = [ MOV_PATH '/tilt_low.png' ];
-%         elseif videoSequence(thisGrating) == 4
-%             ImageName = [ MOV_PATH '/vertical_low.png' ];
-%         end
-%     end
 
     %% Start trial
 
@@ -348,21 +348,21 @@ for thisTrial = 1:experiment.nTrials
         elseif videoSequence(thisGrating) == 8
             TRIGGER = PRESENTATION8;
         elseif videoSequence(thisGrating) == 9
-            TRIGGER = PRESENTATION9;
+            TRIGGER = PRESENTATION3;
         elseif videoSequence(thisGrating) == 10
-            TRIGGER = PRESENTATION10;
+            TRIGGER = PRESENTATION4;
         elseif videoSequence(thisGrating) == 11
-            TRIGGER = PRESENTATION11;
+            TRIGGER = PRESENTATION2;
         elseif videoSequence(thisGrating) == 12
-            TRIGGER = PRESENTATION12;
+            TRIGGER = PRESENTATION3;
         elseif videoSequence(thisGrating) == 13
-            TRIGGER = PRESENTATION13;
+            TRIGGER = PRESENTATION4;
         elseif videoSequence(thisGrating) == 14
-            TRIGGER = PRESENTATION14;
+            TRIGGER = PRESENTATION2;
         elseif videoSequence(thisGrating) == 15
-            TRIGGER = PRESENTATION15;
+            TRIGGER = PRESENTATION3;
         elseif videoSequence(thisGrating) == 16
-            TRIGGER = PRESENTATION16;
+            TRIGGER = PRESENTATION4;
         end
     end
 
