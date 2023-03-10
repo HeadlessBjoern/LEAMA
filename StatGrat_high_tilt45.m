@@ -1,4 +1,4 @@
-function StatGrat_high_tilt45(angle, StimuliDuration, texsize, f)
+function StatGrat_high_tilt45(angle, StimuliDuration, texsize, f, ptbWindow)
 % function DriftDemo6(angle, cyclespersecond, f)
 % ___________________________________________________________________
 %
@@ -68,6 +68,12 @@ if nargin < 1 || isempty(texsize)
     texsize = 250;
 end;
 
+if nargin < 1 || isempty(ptbWindow)
+    % Half-Size of the grating image: We default to 250.
+    ptbWindow = 10;
+end;
+
+
 
 try
     AssertOpenGL;
@@ -91,16 +97,16 @@ try
     inc=white-gray;
 
     % Open a double buffered fullscreen window with a gray background:
-    w = Screen('OpenWindow',screenNumber, gray);
+%     w = Screen('OpenWindow',screenNumber, gray);
 
     % Make sure this GPU supports shading at all:
     AssertGLSL;
 
     % Enable alpha blending for typical drawing of masked textures:
-    Screen('BlendFunction', w, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    Screen('BlendFunction', ptbWindow, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     % Create a special texture drawing shader for masked texture drawing:
-    glsl = MakeTextureDrawShader(w, 'SeparateAlphaChannel');
+    glsl = MakeTextureDrawShader(ptbWindow, 'SeparateAlphaChannel');
 
     % Calculate parameters of the grating:
     p=ceil(1/f); % pixels/cycle, rounded up.
@@ -122,19 +128,19 @@ try
 
     % Store alpha-masked grating in texture and attach the special 'glsl'
     % texture shader to it:
-    gratingtex1 = Screen('MakeTexture', w, grating , [], [], [], [], glsl);
+    gratingtex1 = Screen('MakeTexture', ptbWindow, grating , [], [], [], [], glsl);
 
     % Definition of the drawn source rectangle on the screen:
     srcRect=[0 0 visiblesize visiblesize];
 
     % Draw Texture, flip and wait for duration the stimuli should have
-    Screen('DrawTexture', w, gratingtex1, srcRect, [], angle);
-    Screen('Flip', w);
+    Screen('DrawTexture', ptbWindow, gratingtex1, srcRect, [], angle);
+    Screen('Flip', ptbWindow);
     WaitSecs(StimuliDuration)
 
 
     % The same commands wich close onscreen and offscreen windows also close textures.
-    sca;
+%     sca;
 
 catch
     % This "catch" section executes in case of an error in the "try" section

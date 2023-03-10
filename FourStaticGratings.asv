@@ -26,18 +26,6 @@ PRESENTATION1 = 21; % trigger for presentation of high skewed matrix
 PRESENTATION2 = 22; % trigger for presentation of high vertical matrix
 PRESENTATION3 = 23; % trigger for presentation of low skewed matrix
 PRESENTATION4 = 24; % trigger for presentation of low vertical matrix
-PRESENTATION5 = 25;
-PRESENTATION6 = 26;
-PRESENTATION7 = 27;
-PRESENTATION8 = 28;
-PRESENTATION9 = 30;
-PRESENTATION10 = 32;
-PRESENTATION11 = 33;
-PRESENTATION12 = 34;
-PRESENTATION13 = 35;
-PRESENTATION14 = 36;
-PRESENTATION15 = 37;
-PRESENTATION16 = 38;
 STIMOFF = 29; % trigger for change of grating to cfi
 BLOCK0 = 39; % trigger for start of training block
 BLOCK1 = 31; % trigger for start of task (block)
@@ -261,8 +249,8 @@ for thisTrial = 1:experiment.nTrials
         disp(['Start of Trial ' num2str(thisGrating)]); % Output of current trial iteration
     end
 
-%     Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-%     Screen('Flip', ptbWindow);
+    Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+    Screen('Flip', ptbWindow);
 
     %     if thisTrial == 1
     %         Screen('DrawLines',ptbWindow,fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2); % Draw fixation cross
@@ -416,45 +404,67 @@ for thisTrial = 1:experiment.nTrials
     if mod(thisTrial,2) == 0
    
         % Stimulus trial
-        StatGrat_high_tilt45;
-%         if videoSequence(thisGrating) == 1
-%             StatGrat_high_horizontal;   % 35 times
-%         elseif videoSequence(thisGrating) == 2
-%             StatGrat_high_vertical;     % 35 times
-%         elseif videoSequence(thisGrating) == 3
-%             StatGrat_high_tilt45;       % 35 times
-%         elseif videoSequence(thisGrating) == 4
-%             StatGrat_high_tilt115;      % 35 times
-%         elseif videoSequence(thisGrating) == 5
-%             StatGrat_low_horizontal;    % 35 times
-%         elseif videoSequence(thisGrating) == 6
-%             StatGrat_low_vertical;      % 35 times
-%         elseif videoSequence(thisGrating) == 7
-%             StatGrat_low_tilt45;        % 35 times
-%         elseif videoSequence(thisGrating) == 8
-%             StatGrat_low_tilt115;       % 35 times
-%         elseif videoSequence(thisGrating) == 9
-%             StaticGrating_horizontal;   % 15 times
-%         elseif videoSequence(thisGrating) == 10
-%             StaticGrating_vertical;     % 15 times
-%         elseif videoSequence(thisGrating) == 11
-%             StaticGrating_tilt45;       % 15 times
-%         elseif videoSequence(thisGrating) == 12
-%             StaticGrating_tilt115;      % 15 times
-%         elseif videoSequence(thisGrating) == 13
-%             StatGrat_low_horizontal;    % 15 times
-%         elseif videoSequence(thisGrating) == 14
-%             StatGrat_low_vertical;      % 15 times
-%         elseif videoSequence(thisGrating) == 15
-%             StatGrat_low_tilt45;        % 15 times
-%         elseif videoSequence(thisGrating) == 16
-%             StatGrat_low_tilt115;       % 15 times
-%         end
+        if videoSequence(thisGrating) == 1
+            StatGrat_high_horizontal;   % 35 times
+        elseif videoSequence(thisGrating) == 2
+            StatGrat_high_vertical;     % 35 times
+        elseif videoSequence(thisGrating) == 3
+            StatGrat_high_tilt45;       % 35 times
+        elseif videoSequence(thisGrating) == 4
+            StatGrat_high_tilt115;      % 35 times
+        elseif videoSequence(thisGrating) == 5
+            StatGrat_low_horizontal;    % 35 times
+        elseif videoSequence(thisGrating) == 6
+            StatGrat_low_vertical;      % 35 times
+        elseif videoSequence(thisGrating) == 7
+            StatGrat_low_tilt45;        % 35 times
+        elseif videoSequence(thisGrating) == 8
+            StatGrat_low_tilt115;       % 35 times
+        elseif videoSequence(thisGrating) == 9
+            StaticGrating_horizontal;   % 15 times
+        elseif videoSequence(thisGrating) == 10
+            StaticGrating_vertical;     % 15 times
+        elseif videoSequence(thisGrating) == 11
+            StaticGrating_tilt45;       % 15 times
+        elseif videoSequence(thisGrating) == 12
+            StaticGrating_tilt115;      % 15 times
+        elseif videoSequence(thisGrating) == 13
+            StatGrat_low_horizontal;    % 15 times
+        elseif videoSequence(thisGrating) == 14
+            StatGrat_low_vertical;      % 15 times
+        elseif videoSequence(thisGrating) == 15
+            StatGrat_low_tilt45;        % 15 times
+        elseif videoSequence(thisGrating) == 16
+            StatGrat_low_tilt115;       % 15 times
+        end
     
     else
         %% Playback loop (presenting frames of the fixation cross movie, each after another)
-        FixationCross;
+        % Open movie file:
+        movie = Screen('OpenMovie', ptbWindow, moviename);
+
+        % Start playback engine:
+        Screen('PlayMovie', movie, 1);
         
+        while 1
+            % Wait for next movie frame, retrieve texture handle to it
+            tex = Screen('GetMovieImage', ptbWindow, movie);
+
+            % stop the video if the video duration time has passed
+            runTime = GetSecs;
+            if runTime >= maxTime
+                break;
+            end
+
+            % Draw the new texture immediately to screen:
+            Screen('DrawTexture', ptbWindow, tex);
+            % Update display including photodiodes
+            Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+            Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1);
+            Screen('Flip', ptbWindow);
+            % Release texture:
+            Screen('Close', tex);
+        end
     end
 
 

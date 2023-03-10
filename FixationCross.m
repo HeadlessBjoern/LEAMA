@@ -10,15 +10,16 @@ equipment.gammaVals = [1 1 1];
 
 % Set up stimulus parameters Fixation
 stimulus.fixationOn = 1;                % Toggle fixation on (1) or off (0)
-stimulus.fixationSize_dva = 1;          % Size of fixation cross in degress of visual angle (smaller version: 1.5)
-stimulus.fixationColor = [0.72 0.14 0.14];       % Color of fixation cross (1 = white, 0 = black, [1 0 0] = red, [1 0.05 0.5] = pink)
-stimulus.fixationLineWidth = 6;         % Line width of fixation cross (thicker version: 1.5)
+stimulus.fixationSize_dva = 0.3;          % Size of fixation cross in degress of visual angle (smaller version: 1.5)
+stimulus.fixationColor = [0 0 0];       % Color of fixation cross (1 = white, 0 = black, [1 0 0] = red, [1 0.05 0.5] = pink)
+stimulus.fixationLineWidth = 1.3;         % Line width of fixation cross (thicker version: 1.5)
 
 % Location
 stimulus.regionHeight_dva = 7.3;         % Height of the region
 stimulus.regionWidth_dva = 4;            % Width of the region
 stimulus.regionEccentricity_dva = 3;     % Eccentricity of regions from central fixation
 
+try
 % Imaging set up
 screenNumber=max(Screen('Screens'));
 PsychImaging('PrepareConfiguration');
@@ -28,14 +29,14 @@ PsychImaging('AddTask', 'General', 'NormalizedHighresColorRange');
 %     Screen('Preference', 'SkipSyncTests', 0); % For linux
 
 % Window set-up
-[w, winRect] = PsychImaging('OpenWindow', screenNumber, equipment.greyVal);
-PsychColorCorrection('SetEncodingGamma', w, equipment.gammaVals);
+% [w, winRect] = PsychImaging('OpenWindow', screenNumber, equipment.greyVal);
+PsychColorCorrection('SetEncodingGamma', ptbWindow, equipment.gammaVals);
 [screenWidth, screenHeight] = RectSize(winRect);
 screenCentreX = round(screenWidth/2);
 screenCentreY = round(screenHeight/2);
-flipInterval = Screen('GetFlipInterval', w);
-Screen('BlendFunction', w, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
-experiment.runPriority = MaxPriority(w);
+flipInterval = Screen('GetFlipInterval', ptbWindow);
+Screen('BlendFunction', ptbWindow, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
+experiment.runPriority = MaxPriority(ptbWindow);
 
 % Calculate equipment parameters
 equipment.mpd = (equipment.viewDist/2)*tan(deg2rad(2*stimulus.regionEccentricity_dva))/stimulus.regionEccentricity_dva; % Millimetres per degree
@@ -49,7 +50,12 @@ fixCoords = [fixHorizontal; fixVertical];
 
 
 % Trial run
-Screen('DrawLines', w, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2);
-Screen('Flip', w)
+Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2);
+Screen('Flip', ptbWindow)
+WaitSecs(2)
 
+catch
+    sca;
+
+end
 

@@ -235,9 +235,9 @@ for thisTrial = 1:experiment.nTrials
         if videoSequence(thisGrating) == 1
             ImageName = [ MOV_PATH '/tilt_high.png' ];
         elseif videoSequence(thisGrating) == 2
-            ImageName = [ MOV_PATH '/vertical_high.png' ];
-        elseif videoSequence(thisGrating) == 3
             ImageName = [ MOV_PATH '/tilt_low.png' ];
+        elseif videoSequence(thisGrating) == 3
+            ImageName = [ MOV_PATH '/vertical_high.png' ];
         elseif videoSequence(thisGrating) == 4
             ImageName = [ MOV_PATH '/vertical_low.png' ];
         end
@@ -417,7 +417,9 @@ for thisTrial = 1:experiment.nTrials
         end
     end
 
-
+    Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+    Screen('Flip', ptbWindow);
+    
     % Stop keyboard monitoring
     KbQueueStop(gki);
 

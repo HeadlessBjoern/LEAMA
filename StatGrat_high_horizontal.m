@@ -1,4 +1,4 @@
-function StatGrat_high_horizontal(angle, StimuliDuration, texsize, f)
+function StatGrat_high_horizontal(angle, StimuliDuration, texsize, f, ptbWindow)
 % function DriftDemo6(angle, cyclespersecond, f)
 % ___________________________________________________________________
 %
@@ -91,7 +91,7 @@ try
     inc=white-gray;
 
     % Open a double buffered fullscreen window with a gray background:
-    w = Screen('OpenWindow',screenNumber, gray);
+%     w = Screen('OpenWindow',screenNumber, gray);
 
     % Make sure this GPU supports shading at all:
     AssertGLSL;
@@ -100,7 +100,7 @@ try
     Screen('BlendFunction', w, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     % Create a special texture drawing shader for masked texture drawing:
-    glsl = MakeTextureDrawShader(w, 'SeparateAlphaChannel');
+    glsl = MakeTextureDrawShader(ptbWindow, 'SeparateAlphaChannel');
 
     % Calculate parameters of the grating:
     p=ceil(1/f); % pixels/cycle, rounded up.
