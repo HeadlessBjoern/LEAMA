@@ -51,31 +51,36 @@ function StatGrat_high_tilt45(angle, StimuliDuration, texsize, f, ptbWindow)
 if nargin < 3 || isempty(f)
     % Grating cycles/pixel
     f = 0.04;
-end;
+end
 
 if nargin < 1 || isempty(angle)
     % Angle of the grating: We default to 30 degrees.
     angle = 45;
-end;
+end
 
 if nargin < 1 || isempty(StimuliDuration)
     % Abort demo after 60 seconds.
     StimuliDuration = 2;
-end;
+end
 
 if nargin < 1 || isempty(texsize)
     % Half-Size of the grating image: We default to 250.
     texsize = 250;
-end;
+end
 
 if nargin < 1 || isempty(ptbWindow)
     % Half-Size of the grating image: We default to 250.
-    ptbWindow = 10;
-end;
+    ptbWindow = 1;
+end
 
+% whichScreen = 1;  
+% screenID = whichScreen;
+% equipment.greyVal = .5;
+% [ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
 
-
+% ptbWindow = 1;
 try
+    [ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
     AssertOpenGL;
 
     % Get the list of screens and choose the one with the highest screen number.
@@ -103,7 +108,7 @@ try
     AssertGLSL;
 
     % Enable alpha blending for typical drawing of masked textures:
-    Screen('BlendFunction', ptbWindow, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+%     Screen('BlendFunction', ptbWindow, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     % Create a special texture drawing shader for masked texture drawing:
     glsl = MakeTextureDrawShader(ptbWindow, 'SeparateAlphaChannel');
@@ -128,13 +133,13 @@ try
 
     % Store alpha-masked grating in texture and attach the special 'glsl'
     % texture shader to it:
-    gratingtex1 = Screen('MakeTexture', ptbWindow, grating , [], [], [], [], glsl);
+    gratingtex1 = Screen('MakeTexture', ptbWindow, grating, [], [], [], [], glsl);
 
     % Definition of the drawn source rectangle on the screen:
     srcRect=[0 0 visiblesize visiblesize];
 
     % Draw Texture, flip and wait for duration the stimuli should have
-    Screen('DrawTexture', ptbWindow, gratingtex1, srcRect, [], angle);
+    Screen('DrawTexture', ptbWindow, gratingtex1, winRect, [], angle);
     Screen('Flip', ptbWindow);
     WaitSecs(StimuliDuration)
 

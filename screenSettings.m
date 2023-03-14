@@ -32,8 +32,8 @@ backColor = [0, 0, 0]; % black
 stimColor = [1500, 1500, 1500]; % white
 backDiameter = 35;
 stimDiameter = 33;
-backPos = [4, screenHeight - 20]; % 40 for test, has to be 4 afterwards
-stimPos = [4, screenHeight - 20]; % 40 for test, has to be 4 afterwards
+backPos = [40, screenHeight - 20]; % 40 for test, has to be 4 afterwards
+stimPos = [40, screenHeight - 20]; % 40 for test, has to be 4 afterwards
 
 
 

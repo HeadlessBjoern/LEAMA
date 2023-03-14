@@ -282,56 +282,7 @@ for thisTrial = 1:experiment.nTrials
     %     end
     %     Screen('FillRect',ptbWindow,[1, 0, 0], Rec2plot);
 
-    %% Open psychtoolbox window
-    % this is obsolete because it is already opened for the
-    % startExperimentText; but maybe we need it later so I leave it in here
-    % for now
-
-    % Set windowrect for MovieDisplay
-    % windowrect = [];
-
-    % Open window for movie (purple loading screen)
-    %     if thisTrial == 1
-    %         win = Screen('OpenWindow', whichScreen, gray, windowrect); % CHECK IF GRAY BACKGROUND WORKS
-    %     end
-
-
-    %% Open second movie file:
-    %     moviename = '/home/methlab/Desktop/LEAMA/exampleMovieType2.mp4';
-    %     movie = Screen('OpenMovie', ptbWindow, moviename);
-    %
-    %     % Start playback engine:
-    %     Screen('PlayMovie', movie, 1);
-    %
-    %     maxTime = GetSecs + 2;
-    %     while 1
-    %         % Wait for next movie frame, retrieve texture handle to it
-    %         tex = Screen('GetMovieImage', ptbWindow, movie);
-    %
-    %         % Valid texture returned? A negative value means end of movie reached:
-    %         %         if tex<=0
-    %         %             % We're done, break out of loop:
-    %         %             break;
-    %         %         end
-    %         runTime = GetSecs;
-    %         if runTime >= maxTime
-    %             break;
-    %         end
-    %
-    %         % Draw the new texture immediately to screen:
-    %         Screen('DrawTexture', ptbWindow, tex);
-    %         % Update display:
-    %         Screen('Flip', ptbWindow);
-    %         % Release texture:
-    %         Screen('Close', tex);
-    %     end
-    %
-    %     % Stop playback:
-    %     Screen('PlayMovie', movie, 0);
-    %     % Close movie:
-    %     Screen('CloseMovie', movie);
     
-
     %% Wait for release of possible keyboard presses
     KbReleaseWait;
 
@@ -416,7 +367,9 @@ for thisTrial = 1:experiment.nTrials
     if mod(thisTrial,2) == 0
    
         % Stimulus trial
-        StatGrat_high_tilt45;
+%         [ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
+%         StatGrat_high_tilt45;
+          FixationCross;
 %         if videoSequence(thisGrating) == 1
 %             StatGrat_high_horizontal;   % 35 times
 %         elseif videoSequence(thisGrating) == 2
@@ -453,7 +406,9 @@ for thisTrial = 1:experiment.nTrials
     
     else
         %% Playback loop (presenting frames of the fixation cross movie, each after another)
-        FixationCross;
+%         [ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
+        StatGrat_high_tilt45;
+%         FixationCross;
         
     end
 
@@ -813,4 +768,4 @@ end
 % end
 
 %% Close Psychtoolbox window
-Screen('CloseAll');
+% Screen('CloseAll');

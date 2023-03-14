@@ -52,10 +52,10 @@ fixCoords = [fixHorizontal; fixVertical];
 % Trial run
 Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2);
 Screen('Flip', ptbWindow)
-WaitSecs(2)
-
+WaitSecs(timing.cfi)
+% sca;
 catch
-    sca;
+%      sca;
 
 end
 
