@@ -238,22 +238,8 @@ for thisTrial = 1:experiment.nTrials
 
 
     %% Define stimulus or CFI trial
-    if mod(thisTrial,2) == 1
-        % CFI trial
-        moviename = '/home/methlab/Desktop/LEAMA/videoCFI.mp4';
-    end
-%     elseif mod(thisTrial,2) == 0
-%         % Stimulus trial
-%         if videoSequence(thisGrating) == 1
-%             ImageName = [ MOV_PATH '/tilt_high.png' ];
-%         elseif videoSequence(thisGrating) == 2
-%             ImageName = [ MOV_PATH '/vertical_high.png' ];
-%         elseif videoSequence(thisGrating) == 3
-%             ImageName = [ MOV_PATH '/tilt_low.png' ];
-%         elseif videoSequence(thisGrating) == 4
-%             ImageName = [ MOV_PATH '/vertical_low.png' ];
-%         end
-%     end
+    moviename = '/home/methlab/Desktop/LEAMA/videoCFI.mp4';
+
 
     %% Start trial
 

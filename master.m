@@ -17,7 +17,7 @@ rootFilepath = pwd; % Retrieve the present working directory
 PPDEV_PATH = '/home/methlab/Documents/MATLAB/ppdev-mex-master'; % For sending EEG triggers
 TITTA_PATH = '/home/methlab/Documents/MATLAB/Titta'; % For Tobii ET
 DATA_PATH = '/home/methlab/Desktop/LEAMA/data'; % Folder to save data
-FUNS_PATH = '/home/methlab/Desktop/LEAMA' ; % Folder with all functions
+FUNS_PATH = '/home/methlab/Desktop/LEAMA'; % Folder with all functions
 MOV_PATH = '/home/methlab/Desktop/LEAMA'; % Folder with movie files
 
 % make data dir, if doesn't exist yet
