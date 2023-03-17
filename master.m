@@ -25,7 +25,7 @@ mkdir(DATA_PATH)
    
 % add path to folder with functions
 addpath(FUNS_PATH)
-
+ 
 % manage screens
 screenSettings
 
@@ -44,7 +44,7 @@ ListenChar(2);
 TRAINING = 0; % Training is set to 0 to allow the code in GaborMatrices.m to be easily adapted to a training condition.
 BLOCK = 1;
 TASK = 'Gr';
-FourStaticGratingsCopy;
+FourStaticGratingsExp;
 
 %% Allow keyboard input into Matlab code
 ListenChar(0);

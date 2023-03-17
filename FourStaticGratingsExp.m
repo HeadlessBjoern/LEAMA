@@ -22,14 +22,14 @@ HideCursor(whichScreen);
 % define triggers
 TASK_START = 10;
 FIXATION = 15; % trigger for fixation cross
-PRESENTATION1 = 21; % trigger for presentation of high skewed matrix
-PRESENTATION2 = 22; % trigger for presentation of high vertical matrix
-PRESENTATION3 = 23; % trigger for presentation of low skewed matrix
-PRESENTATION4 = 24; % trigger for presentation of low vertical matrix
-PRESENTATION5 = 25;
-PRESENTATION6 = 26;
-PRESENTATION7 = 27;
-PRESENTATION8 = 28;
+PRESENTATION1 = 21; % trigger for presentation of high horizontal
+PRESENTATION2 = 22; % trigger for presentation of high vertical
+PRESENTATION3 = 23; % trigger for presentation of high 45
+PRESENTATION4 = 24; % trigger for presentation of high 115
+PRESENTATION5 = 25; % trigger for presentation of low horizontal
+PRESENTATION6 = 26; % trigger for presentation of low vertical
+PRESENTATION7 = 27; % trigger for presentation of low 45
+PRESENTATION8 = 28; % trigger for presentation of low 115
 PRESENTATION9 = 30;
 PRESENTATION10 = 32;
 PRESENTATION11 = 33;
@@ -55,7 +55,7 @@ if TRAINING == 1
     experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
 else
     %  nGratings = 400;
-    experiment.nGratings = 8;
+    experiment.nGratings = 16;
     experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
 end
 
@@ -232,6 +232,19 @@ HideCursor(whichScreen);
 %% Experiment Loop
 noFixation = 0;
 
+PsychImaging('PrepareConfiguration');
+         PsychImaging('AddTask', 'FinalFormatting', 'DisplayColorCorrection', 'SimpleGamma');
+         PsychImaging('AddTask', 'General', 'FloatingPoint32BitIfPossible');
+         PsychImaging('AddTask', 'General', 'NormalizedHighresColorRange');
+      
+ 
+         [ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
+         PsychColorCorrection('SetEncodingGamma', ptbWindow, equipment.gammaVals);
+         Screen('BlendFunction', ptbWindow, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
+
+
+
+
 %  ptbWindow = PsychImaging('OpenWindow', screenID, equipment.greyVal);
 for thisTrial = 1:experiment.nTrials
     %% Define thisGrating for usage as index
@@ -350,272 +363,118 @@ for thisTrial = 1:experiment.nTrials
     queueStartTime = GetSecs;
 
     %% Display image of grating or movie of fixation cross
-%     ptbWindow = PsychImaging('OpenWindow', screenID, equipment.greyVal);
-    if mod(thisTrial,2) == 0
+    %     ptbWindow = PsychImaging('OpenWindow', screenID, equipment.greyVal);
+    if mod(thisTrial,2) == 1
 
-        % Stimulus trial
-%         [ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
-        %         StatGrat_high_tilt45;
-        %         FixationCross;
         %% Running
 
-        % Set up equipment parameters
-%         equipment.viewDist = 800;               % Viewing distance in millimetres
-%         equipment.ppm = 3.6;                    % Pixels per millimetre !! NEEDS TO BE SET. USE THE MeasureDpi FUNCTION !!
-%         equipment.greyVal = .47;
-%         equipment.blackVal = 0;
-%         equipment.whiteVal = 1;
-%         equipment.gammaVals = [1 1 1];
-% 
-%         % Set up stimulus parameters Fixation
-%         stimulus.fixationOn = 1;                % Toggle fixation on (1) or off (0)
-%         stimulus.fixationSize_dva = 0.3;          % Size of fixation cross in degress of visual angle (smaller version: 1.5)
-%         stimulus.fixationColor = [0 0 0];       % Color of fixation cross (1 = white, 0 = black, [1 0 0] = red, [1 0.05 0.5] = pink)
-%         stimulus.fixationLineWidth = 1.3;         % Line width of fixation cross (thicker version: 1.5)
-% 
-%         % Location
-%         stimulus.regionHeight_dva = 7.3;         % Height of the region
-%         stimulus.regionWidth_dva = 4;            % Width of the region
-%         stimulus.regionEccentricity_dva = 3;     % Eccentricity of regions from central fixation
+        start_time = GetSecs;
 
-
-        % Imaging set up
-%         screenNumber=max(Screen('Screens'));
-%         PsychImaging('PrepareConfiguration');
-%         PsychImaging('AddTask', 'FinalFormatting', 'DisplayColorCorrection', 'SimpleGamma');
-%         PsychImaging('AddTask', 'General', 'FloatingPoint32BitIfPossible');
-%         PsychImaging('AddTask', 'General', 'NormalizedHighresColorRange');
-%         %     Screen('Preference', 'SkipSyncTests', 0); % For linux
-% 
-%             % Window set-up
-% %                [ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
-%             PsychColorCorrection('SetEncodingGamma', ptbWindow, equipment.gammaVals);
-%             [screenWidth, screenHeight] = RectSize(winRect);
-%             screenCentreX = round(screenWidth/2);
-%             screenCentreY = round(screenHeight/2);
-%             flipInterval = Screen('GetFlipInterval', ptbWindow);
-%              Screen('BlendFunction', ptbWindow, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
-%             experiment.runPriority = MaxPriority(ptbWindow);
-% 
-%             % Calculate equipment parameters
-%             equipment.mpd = (equipment.viewDist/2)*tan(deg2rad(2*stimulus.regionEccentricity_dva))/stimulus.regionEccentricity_dva; % Millimetres per degree
-%             equipment.ppd = equipment.ppm*equipment.mpd;
-% 
-%             % Fix coordiantes for fixation cross
-%             stimulus.fixationSize_pix = round(stimulus.fixationSize_dva*equipment.ppd);
-%             fixHorizontal = [round(-stimulus.fixationSize_pix/2) round(stimulus.fixationSize_pix/2) 0 0];
-%             fixVertical = [0 0 round(-stimulus.fixationSize_pix/2) round(stimulus.fixationSize_pix/2)];
-%             fixCoords = [fixHorizontal; fixVertical];
-
-
-            flip_time = timing.cfi;
-            start_time = GetSecs;
-            
-            while (GetSecs - start_time) < flip_time
+        while (GetSecs - start_time) < timing.cfi
             Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2);
             Screen('Flip', ptbWindow)
             WaitSecs(timing.cfi)
-            end
+        end
 
-            % sca;
-        
-            %      sca;
-
-        
-
-
-        %         if videoSequence(thisGrating) == 1
-        %             StatGrat_high_horizontal;   % 35 times
-        %         elseif videoSequence(thisGrating) == 2
-        %             StatGrat_high_vertical;     % 35 times
-        %         elseif videoSequence(thisGrating) == 3
-        %             StatGrat_high_tilt45;       % 35 times
-        %         elseif videoSequence(thisGrating) == 4
-        %             StatGrat_high_tilt115;      % 35 times
-        %         elseif videoSequence(thisGrating) == 5
-        %             StatGrat_low_horizontal;    % 35 times
-        %         elseif videoSequence(thisGrating) == 6
-        %             StatGrat_low_vertical;      % 35 times
-        %         elseif videoSequence(thisGrating) == 7
-        %             StatGrat_low_tilt45;        % 35 times
-        %         elseif videoSequence(thisGrating) == 8
-        %             StatGrat_low_tilt115;       % 35 times
-        %         elseif videoSequence(thisGrating) == 9
-        %             StaticGrating_horizontal;   % 15 times
-        %         elseif videoSequence(thisGrating) == 10
-        %             StaticGrating_vertical;     % 15 times
-        %         elseif videoSequence(thisGrating) == 11
-        %             StaticGrating_tilt45;       % 15 times
-        %         elseif videoSequence(thisGrating) == 12
-        %             StaticGrating_tilt115;      % 15 times
-        %         elseif videoSequence(thisGrating) == 13
-        %             StatGrat_low_horizontal;    % 15 times
-        %         elseif videoSequence(thisGrating) == 14
-        %             StatGrat_low_vertical;      % 15 times
-        %         elseif videoSequence(thisGrating) == 15
-        %             StatGrat_low_tilt45;        % 15 times
-        %         elseif videoSequence(thisGrating) == 16
-        %             StatGrat_low_tilt115;       % 15 times
-        %         end
 
     else
-        %% Playback loop (presenting frames of the fixation cross movie, each after another)
-        %                  [ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
-        %         function StatGrat_high_tilt45(angle, StimuliDuration, texsize, f, ptbWindow, screenID, greyVal)
-        % function DriftDemo6(angle, cyclespersecond, f)
-        % ___________________________________________________________________
-        %
-        % Parameters:
-        %
-        % angle = Angle of the gratings with respect to the vertical direction.
-        % cyclespersecond = Speed of gratings in cycles per second.
-        % f = Frequency of gratings in cycles per pixel.
-        %
-        % _________________________________________________________________________
 
-        %         ptbWindow = PsychImaging('OpenWindow', screenID, equipment.greyVal);
-        % HISTORY
-        % 3/31/09 mk Written.
+        if videoSequence(thisGrating) == 1
+             angle = 90;
+         elseif videoSequence(thisGrating) == 2
+             angle = 0;     % 35 times
+         elseif videoSequence(thisGrating) == 3
+             angle = 45;       % 35 times
+         elseif videoSequence(thisGrating) == 4
+             angle = 115;     % 35 times
+         elseif videoSequence(thisGrating) == 5
+             angle = 90;    % 35 times
+         elseif videoSequence(thisGrating) == 6
+             angle = 0;      % 35 times
+         elseif videoSequence(thisGrating) == 7
+             angle = 45;        % 35 times
+         elseif videoSequence(thisGrating) == 8
+             angle = 115;       % 35 times
+         elseif videoSequence(thisGrating) == 9
+             angle = 90;   % 15 times
+         elseif videoSequence(thisGrating) == 10
+             angle = 0;     % 15 times
+         elseif videoSequence(thisGrating) == 11
+             angle = 45;       % 15 times
+         elseif videoSequence(thisGrating) == 12
+             angle = 115;      % 15 times
+         elseif videoSequence(thisGrating) == 13
+             angle = 90;    % 15 times
+         elseif videoSequence(thisGrating) == 14
+             angle = 0;     % 15 times
+         elseif videoSequence(thisGrating) == 15
+             angle = 45;       % 15 times
+         elseif videoSequence(thisGrating) == 16
+             angle = 115;       % 15 times
+         end
 
-        %         if nargin < 3 || isempty(f)
-        % Grating cycles/pixel
-        f = 0.04;
-        %         end
-
-        %         if nargin < 1 || isempty(angle)
-        % Angle of the grating: We default to 30 degrees.
-        angle = 45;
-        %         end
-
-        %         if nargin < 1 || isempty(StimuliDuration)
-        % Abort demo after 60 seconds.
         StimuliDuration = 2;
-        %         end
-
-        %         if nargin < 1 || isempty(texsize)
-        % Half-Size of the grating image: We default to 250.
-        texsize = 250;
-        %         end
-
-        %         if nargin < 1 || isempty(ptbWindow)
-        % Half-Size of the grating image: We default to 250.
-        %             ptbWindow = 10;
-        %         end
-
-        %         if nargin < 1 || isempty(screenID)
-        % Half-Size of the grating image: We default to 250.
-        %             screenID = 1;
-        %         end
-
-        %         if nargin < 1 || isempty(greyVal)
-        % Half-Size of the grating image: We default to 250.
+        texsize = 200;
         greyVal = 0.5;
-        %         end
+        f = 0.05;
 
-        % whichScreen = 1;
-        % screenID = whichScreen;
-        % equipment.greyVal = .5;
-
-        PsychImaging('PrepareConfiguration');
-        PsychImaging('AddTask', 'FinalFormatting', 'DisplayColorCorrection', 'SimpleGamma');
-        PsychImaging('AddTask', 'General', 'FloatingPoint32BitIfPossible');
-        PsychImaging('AddTask', 'General', 'NormalizedHighresColorRange');
-     
-
-        [ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
-          PsychColorCorrection('SetEncodingGamma', ptbWindow, equipment.gammaVals);
-        Screen('BlendFunction', ptbWindow, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
-
-        %         try
         AssertOpenGL;
 
-        % Get the list of screens and choose the one with the highest screen number.
-        %     screenNumber=max(Screen('Screens'));
-
-
         % Find the color values which correspond to white and black.
-        white=WhiteIndex(screenID);
-        black=BlackIndex(screenID);
+        white = WhiteIndex(screenID);
+        black = BlackIndex(screenID);
 
-            % Round gray to integral number, to avoid roundoff artifacts with some
-            % graphics cards:
-            gray=round((white+black)/2);
+        % Round gray to integral number, to avoid roundoff artifacts with some graphics cards:
+        gray = round((white+black)/2);
 
-            % This makes sure that on floating point framebuffers we still get a
-            % well defined gray. It isn't strictly neccessary in this demo:
-            if gray == white
-                gray=white / 2;
-            end
-            inc=white-gray;
+        % This makes sure that on floating point framebuffers we still get a
+        % well defined gray. It isn't strictly neccessary in this demo:
+        if gray == white
+            gray = white / 2;
+        end
+        inc = white-gray;
 
-            % Open a double buffered fullscreen window with a gray background:
-            %     w = Screen('OpenWindow',screenNumber, gray);
+        % Make sure this GPU supports shading at all:
+        AssertGLSL;
 
-            % Enable alpha blending for typical drawing of masked textures:
-%             Screen('BlendFunction', ptbWindow, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        % Calculate parameters of the grating:
+        p = ceil(1/f); % pixels/cycle, rounded up.
+        fr = f*2*pi;
+        visiblesize = 2*texsize+1;
 
-            % Make sure this GPU supports shading at all:
-            AssertGLSL;
+        % Create one single static grating image:
+        x = meshgrid(-texsize:texsize + p, -texsize:texsize);
+        grating = gray + inc*cos(fr*x);
 
-            % Create a special texture drawing shader for masked texture drawing:
-%             glsl = MakeTextureDrawShader(ptbWindow, 'SeparateAlphaChannel');
+        % Create circular aperture for the alpha-channel:
+        [x,y] = meshgrid(-texsize:texsize, -texsize:texsize);
 
-            % Calculate parameters of the grating:
-            p=ceil(1/f); % pixels/cycle, rounded up.
-            fr=f*2*pi;
-            visiblesize=2*texsize+1;
-
-            % Create one single static grating image:
-            x = meshgrid(-texsize:texsize + p, -texsize:texsize);
-            grating = gray + inc*cos(fr*x);
-
-            % Create circular aperture for the alpha-channel:
-            [x,y] = meshgrid(-texsize:texsize, -texsize:texsize);
+        if videoSequence(thisGrating) == 1 || videoSequence(thisGrating) == 2 || videoSequence(thisGrating) == 3 || videoSequence(thisGrating) == 4 || videoSequence(thisGrating) == 9|| videoSequence(thisGrating) == 10 || videoSequence(thisGrating) == 11|| videoSequence(thisGrating) == 12
             circle = white * (x.^2 + y.^2 <= (texsize)^2);
-
-            % Set 2nd channel (the alpha channel) of 'grating' to the aperture
-            % defined in 'circle':
-            grating(:,:,2) = 0;
-            grating(1:2*texsize+1, 1:2*texsize+1, 2) = circle;
-
-            % Store alpha-masked grating in texture and attach the special 'glsl'
-            % texture shader to it:
-%             gratingtex1 = Screen('MakeTexture', ptbWindow, grating, [], [], [], [], glsl);
-            gratingtex1 = Screen('MakeTexture', ptbWindow, grating, [], [], [], []);
-
-            % Definition of the drawn source rectangle on the screen:
-            srcRect = [0 0 visiblesize visiblesize];
+        elseif videoSequence(thisGrating) == 5 || videoSequence(thisGrating) == 6 || videoSequence(thisGrating) == 7 || videoSequence(thisGrating) == 8 || videoSequence(thisGrating) == 13 || videoSequence(thisGrating) == 14 || videoSequence(thisGrating) == 15 || videoSequence(thisGrating) == 16
+            circle = gray * (x.^2 + y.^2 <= (texsize)^2);
+        end
 
 
-            flip_time = 2;
-            start_time = GetSecs;
+        % Set 2nd channel (the alpha channel) of 'grating' to the aperture
+        % defined in 'circle':
+        grating(:,:,2) = 0;
+        grating(1:2*texsize+1, 1:2*texsize+1, 2) = circle;
 
-            while (GetSecs - start_time) < flip_time
-                % Draw Texture, flip and wait for duration the stimuli should have
-                Screen('DrawTexture', ptbWindow, gratingtex1, srcRect, [], angle);
-                Screen('Flip', ptbWindow);
-                %             WaitSecs(StimuliDuration)
-            end
+        % Store alpha-masked grating in texture:
+        gratingtex1 = Screen('MakeTexture', ptbWindow, grating, [], [], [], []);
 
+        % Definition of the drawn source rectangle on the screen:
+        srcRect = [0 0 visiblesize visiblesize];
 
-            flip_time = timing.cfi;
-            start_time = GetSecs;
+        start_time = GetSecs;
 
-            while (GetSecs - start_time) < flip_time
-                Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2);
-                Screen('Flip', ptbWindow)
-                WaitSecs(timing.cfi)
-            end
-
-            flip_time = 2;
-            start_time = GetSecs;
-
-            while (GetSecs - start_time) < flip_time
-                % Draw Texture, flip and wait for duration the stimuli should have
-                Screen('DrawTexture', ptbWindow, gratingtex1, srcRect, [], angle);
-                Screen('Flip', ptbWindow);
-                %             WaitSecs(StimuliDuration)
-            end
+        while (GetSecs - start_time) < StimuliDuration
+            % Draw Texture, flip and wait for duration the stimuli should have
+            Screen('DrawTexture', ptbWindow, gratingtex1, srcRect, [], angle);
+            Screen('Flip', ptbWindow);
+            %             WaitSecs(StimuliDuration)
+        end
 
     end
 
@@ -682,13 +541,9 @@ for thisTrial = 1:experiment.nTrials
 
     if mod(thisTrial,2) == 0
         % Check if response was correct (only for Gratings)
-        if videoSequence(thisGrating) == 1 && data.allResponses(thisGrating) == 0 % Skewed + NO button press = correct answer
+        if videoSequence(thisGrating) <= 8 && data.allResponses(thisGrating) == 0 % Skewed + NO button press = correct answer
             data.allCorrect(thisGrating) = 1;
-        elseif videoSequence(thisGrating) == 2 && data.allResponses(thisGrating) == spaceKeyCode % Vert + button press
-            data.allCorrect(thisGrating) = 1;
-        elseif videoSequence(thisGrating) == 3 && data.allResponses(thisGrating) == 0 % Skewed + NO button press = correct answer
-            data.allCorrect(thisGrating) = 1;
-        elseif videoSequence(thisGrating) == 4 && data.allResponses(thisGrating) == spaceKeyCode % Vert + button press = correct answer
+        elseif videoSequence(thisGrating) > 8 && data.allResponses(thisGrating) == spaceKeyCode % Vert + button press
             data.allCorrect(thisGrating) = 1;
         else
             data.allCorrect(thisGrating) = 0; % Wrong response
