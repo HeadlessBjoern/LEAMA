@@ -41,9 +41,9 @@ dialogGKI;
 ListenChar(2);
 
 %% Execute Tasks in randomized order
-TRAINING = 0; % Training is set to 0 to allow the code in GaborMatrices.m to be easily adapted to a training condition.
-BLOCK = 1;
-TASK = 'Gr';
+TRAINING = 0; % Training is set to 0 to allow the code in FourStaticGratings.m to be easily adapted to a training condition.
+% BLOCK = 1;
+TASK = 'G';
 FourStaticGratingsExp;
 
 %% Allow keyboard input into Matlab code

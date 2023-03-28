@@ -21,14 +21,8 @@ filePath = fullfile(DATA_PATH, subjectID);
 if strcmp(TASK, 'Resting')
     edfFile = [subjectID, '_Res.edf'];
 else
-    if TRAINING == 0 && strcmp(TASK, 'Gr')
-        edfFile = [subjectID,'_', '.edf']; % training
-%     elseif TRAINING == 1 && strcmp(TASK, 'OCC_NBack')
-%         edfFile = [subjectID,'_', 'NTr.edf']; % training
-%     elseif strcmp(TASK, 'OCC_Sternberg')
-%         edfFile = [subjectID,'_', num2str(BLOCK), 'STsk.edf']; % actual task (6 Blocks of Sternberg)
-%     elseif strcmp(TASK, 'OCC_NBack')
-%         edfFile = [subjectID,'_', num2str(BLOCK), 'NTsk.edf']; % actual task (2 Blocks of NBack)
+    if TRAINING == 0 && strcmp(TASK, 'G')
+        edfFile = [subjectID,'_', num2str(BLOCK), '.edf']; % Naming files according to blocks
     end
 end
 
