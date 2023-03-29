@@ -87,7 +87,7 @@ for BLOCK = 1 : 4
     stimulus.fixationOn = 1;                % Toggle fixation on (1) or off (0)
     stimulus.fixationSize_dva = .3;         % Size of fixation cross in degress of visual angle
     stimulus.fixationColor0 = [0 0 0];       % Color of fixation cross (1 = white, 0 = black, [1 0 0] = red)
-    stimulus.fixationColor1 = [1 0 0];
+    stimulus.fixationColor1 = [0 0 0];
     stimulus.fixationLineWidth = 1.3;         % Line width of fixation cross
 
     % Location

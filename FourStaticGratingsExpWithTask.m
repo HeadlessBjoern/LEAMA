@@ -8,9 +8,7 @@
 for BLOCK = 1 : 4
     % Start the actual task (EEG recording will start here, if TRAINING = 0)
     disp('GRATING TASK...');
-    if BLOCK > 1
-        WaitSecs(10);
-    end
+    WaitSecs(10);
 
 
     %% EEG and ET
