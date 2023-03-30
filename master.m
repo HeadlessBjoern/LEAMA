@@ -46,5 +46,8 @@ TRAINING = 0; % Training is set to 0 to allow the code in FourStaticGratings.m t
 TASK = 'G';
 FourStaticGratingsExpWithTask;
 
+%% Don't forget to turn on the power again...
+PowerOn;
+
 %% Allow keyboard input into Matlab code
 ListenChar(0);
