@@ -6,19 +6,19 @@ N_task = 25; % 30%
 
 % create list of N_look * 8 and N_task * 8
 gratingselection = [
-    zeros(N_look,1) + 1; 
+    zeros(N_look + 25,1) + 1; % + 25 because need double amount of horizontal gratings
     zeros(N_look,1) + 2;
     zeros(N_look,1) + 3;
     zeros(N_look,1) + 4;
-    zeros(N_look,1) + 5;
+    zeros(N_look + 25,1) + 5; % + 25 because need double amount of horizontal gratings
     zeros(N_look,1) + 6;
     zeros(N_look,1) + 7;
     zeros(N_look,1) + 8;
-    zeros(N_task,1) + 9;
+    zeros(N_task + 25,1) + 9; % + 25 because need double amount of horizontal gratings
     zeros(N_task,1) + 10;
     zeros(N_task,1) + 11;
     zeros(N_task,1) + 12;
-    zeros(N_task,1) + 13;
+    zeros(N_task + 25,1) + 13; % + 25 because need double amount of horizontal gratings
     zeros(N_task,1) + 14;
     zeros(N_task,1) + 15;
     zeros(N_task,1) + 16];
