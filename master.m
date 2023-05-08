@@ -44,6 +44,7 @@ ListenChar(2);
 TRAINING = 0; % Training is set to 0 to allow the code in FourStaticGratings.m to be easily adapted to a training condition.
 % BLOCK = 1;
 TASK = 'G';
+%Resting_EEG;
 FourStaticGratingsExpWithTask;
 
 %% Don't forget to turn on the power again...

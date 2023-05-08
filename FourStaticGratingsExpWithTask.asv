@@ -217,7 +217,7 @@ for BLOCK = 1 : 4
 
     %% Show task instruction text
     DrawFormattedText(ptbWindow,startExperimentText,'center','center',color.textVal);
-    Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+    % Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
     startExperimentTime = Screen('Flip',ptbWindow);
     disp('Participant is reading the instructions.');
     waitResponse = 1;
@@ -379,12 +379,6 @@ for BLOCK = 1 : 4
 
             start_time = GetSecs;
 
-            % Photodiode: white and then black
-            Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
-            Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
-
             while (GetSecs - start_time) < timing.cfi
 
                 if crossSequence(thisCFI) == 0 % No task condition
@@ -394,19 +388,10 @@ for BLOCK = 1 : 4
                 elseif crossSequence(thisCFI) == 1 % Task condition
                     Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor1,[screenCentreX screenCentreY],2);
                     Screen('Flip', ptbWindow)
-                    WaitSecs(timing.cfi.task) % Show red cross for a short time
-                    Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor0,[screenCentreX screenCentreY],2);
-                    Screen('Flip', ptbWindow)
-                    WaitSecs(timing.cfi-timing.cfi.task) % Show black cross for the rest of the CFI time
+                    WaitSecs(timing.cfi.task)
                 end
 
             end
-
-            % Photodiode: white and then black
-            Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
-            Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
 
         else
 
@@ -487,23 +472,12 @@ for BLOCK = 1 : 4
 
             start_time = GetSecs;
 
-            % Photodiode: white and then black
-            Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
-            Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
-
             while (GetSecs - start_time) < StimuliDuration
                 % Draw Texture, flip and wait for duration the stimuli should have
                 Screen('DrawTexture', ptbWindow, gratingtex1, srcRect, [], angle);
                 Screen('Flip', ptbWindow);
+                %             WaitSecs(StimuliDuration)
             end
-
-            % Photodiode: white and then black
-            Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
-            Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
 
         end
 
