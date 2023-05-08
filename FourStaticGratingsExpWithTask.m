@@ -102,7 +102,7 @@ for BLOCK = 1 : 4
     if TRAINING == 1
         loadingText = 'Loading training task...';
         startExperimentText = ['Training task: \n\n' ...
-            'You will see a series of gratings. \n\n' ...
+            'Train: You will see a series of gratings. \n\n' ...
             'Your task is to press SPACE if you see \n\n' ...
             'a red fixation cross. \n\n' ...
             'Otherwise, do not press any button. \n\n' ...
@@ -226,17 +226,17 @@ for BLOCK = 1 : 4
         waitResponse = 0;
     end
 
-    % Send triggers: task starts. If training, send only ET triggers
-    if TRAINING == 1
-        %     EThndl.sendMessage(TASK_START); % ET
-        Eyelink('Message', num2str(TASK_START));
-        Eyelink('command', 'record_status_message "TASK_START"');
-    else
-        %     EThndl.sendMessage(TASK_START); % ET
-        Eyelink('Message', num2str(TASK_START));
-        Eyelink('command', 'record_status_message "TASK_START"');
-        sendtrigger(TASK_START,port,SITE,stayup); % EEG
-    end
+%     % Send triggers: task starts. If training, send only ET triggers
+%     if TRAINING == 1
+%         %     EThndl.sendMessage(TASK_START); % ET
+%         Eyelink('Message', num2str(BLOCK0));
+%         Eyelink('command', 'record_status_message "TASK_START"');
+%     else
+%         %     EThndl.sendMessage(TASK_START); % ET
+%         Eyelink('Message', num2str(TASK_START));
+%         Eyelink('command', 'record_status_message "TASK_START"');
+%         sendtrigger(TASK_START,port,SITE,stayup); % EEG
+%     end
 
     % Send triggers for block and output
     if TRAINING == 1 % Training condition
@@ -359,7 +359,7 @@ for BLOCK = 1 : 4
         if mod(thisTrial,2) == 1
             % CFI trial
             timing.cfi = (randsample(2000:4000, 1))/1000; % Randomize the jittered central fixation interval on trial
-            timing.cfi.task = 0.5;
+            timing.cfi_task = 0.5;
             maxTime = GetSecs + timing.cfi;
         elseif mod(thisTrial,2) == 0
             % Stimulus trial
@@ -394,10 +394,10 @@ for BLOCK = 1 : 4
                 elseif crossSequence(thisCFI) == 1 % Task condition
                     Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor1,[screenCentreX screenCentreY],2);
                     Screen('Flip', ptbWindow)
-                    WaitSecs(timing.cfi.task) % Show red cross for a short time
+                    WaitSecs(timing.cfi_task) % Show red cross for a short time
                     Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor0,[screenCentreX screenCentreY],2);
                     Screen('Flip', ptbWindow)
-                    WaitSecs(timing.cfi-timing.cfi.task) % Show black cross for the rest of the CFI time
+                    WaitSecs(timing.cfi-timing.cfi_task) % Show black cross for the rest of the CFI time
                 end
 
             end
@@ -613,16 +613,16 @@ for BLOCK = 1 : 4
 
     % Send triggers to end task
     endT = Screen('Flip',ptbWindow);
-    if TRAINING == 1
-        %     EThndl.sendMessage(TASK_END,endT);
-        Eyelink('Message', num2str(TASK_END));
-        Eyelink('command', 'record_status_message "TASK_END"');
-    else
-        %     EThndl.sendMessage(TASK_END,endT);
-        Eyelink('Message', num2str(TASK_END));
-        Eyelink('command', 'record_status_message "TASK_END"');
-        sendtrigger(TASK_END,port,SITE,stayup)
-    end
+%     if TRAINING == 1
+%         %     EThndl.sendMessage(TASK_END,endT);
+%         Eyelink('Message', num2str(TASK_END));
+%         Eyelink('command', 'record_status_message "TASK_END"');
+%     else
+%         %     EThndl.sendMessage(TASK_END,endT);
+%         Eyelink('Message', num2str(TASK_END));
+%         Eyelink('command', 'record_status_message "TASK_END"');
+%         sendtrigger(TASK_END,port,SITE,stayup)
+%     end
 
     % Send triggers for block and output
     if BLOCK == 1 && TRAINING == 1
@@ -743,11 +743,11 @@ for BLOCK = 1 : 4
     trigger.RESP_WRONG = RESP_WRONG;
 
     %trigger.RESTING_END = par.CD_END;
-    trigger.BLOCK1_END = ENDBLOCK1;
-    trigger.BLOCK2_END = ENDBLOCK2;
-    trigger.BLOCK3_END = ENDBLOCK3;
-    trigger.BLOCK4_END = ENDBLOCK4;
-    trigger.BLOCK0_END = ENDBLOCK0;
+    trigger.BLOCK1_END = BLOCK1_END;
+    trigger.BLOCK2_END = BLOCK2_END;
+    trigger.BLOCK3_END = BLOCK3_END;
+    trigger.BLOCK4_END = BLOCK4_END;
+    trigger.BLOCK0_END = BLOCK0_END;
     
 
     %% Stop and close EEG and ET recordings

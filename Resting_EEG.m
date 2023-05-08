@@ -48,7 +48,7 @@ ins.resting.end = [...
     'Nun folgen weitere Aufgaben. '...
     ];
 %% Trials
-NrOfTrials = 7;   % How many Cycles to run (8 if you want to run 6 cycles) (7 trials is 5m inutes)
+NrOfTrials = 2;   % How many Cycles to run (8 if you want to run 6 cycles) (7 trials is 5m inutes)
 eyeO = 3:60:303; % Audio cues
 eyeC = 23:60:323;
 
