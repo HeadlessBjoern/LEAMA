@@ -29,10 +29,10 @@ gratingSelection_shuffled = gratingselection(randperm(length(gratingselection)))
 gratingSeq= transpose(gratingSelection_shuffled);
 
 % create four lists out of the one
-gratingSequence1 = gratingSeq(:,1:100);
-gratingSequence2 = gratingSeq(:,101:200);
-gratingSequence3 = gratingSeq(:,201:300);
-gratingSequence4 = gratingSeq(:,301:400);
+gratingSequence1 = gratingSeq(:,1:125);
+gratingSequence2 = gratingSeq(:,126:250);
+gratingSequence3 = gratingSeq(:,251:375);
+gratingSequence4 = gratingSeq(:,376:500);
 
 %% CREATE CROSS SEQUENCES
 

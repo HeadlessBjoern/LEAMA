@@ -119,13 +119,14 @@ for BLOCK = 1 : 4
             '\n\n Press any key to continue.'];
     elseif TRAINING == 0
         loadingText = 'Loading test task...';
-        startExperimentText = ['Test task: \n\n' ...
+        startExperimentText = [
             'You will see a series of gratings. \n\n' ...
             'Your task is to press SPACE if you see \n\n' ...
             'a red fixation cross. \n\n' ...
             'Otherwise, do not press any button. \n\n' ...
-            'Please always use your right hand and look at the screen center.' ...
-            '\n\n Press any key to continue.'];
+            'Please always use your right hand \n\n' ...
+            'and look at the screen center. \n\n' ...
+            'Press any key to continue.'];
     end
 
     % Set up temporal parameters (all in seconds)
@@ -757,7 +758,7 @@ for BLOCK = 1 : 4
     trigger.ENDBLOCK0 = ENDBLOCK0;
     trigger.ENDBLOCK1 = ENDBLOCK1;
     trigger.ENDBLOCK2 = ENDBLOCK2;
-    trigger.ENDBLOCK3 = ENDBLOCK3;
+    trigger.ENDBLOCK3 = ENDBLOCK3;gki
     trigger.ENDBLOCK4 = ENDBLOCK4;
     trigger.RESP_YES = RESP;
     trigger.RESP_NO = NO_RESP;
@@ -808,9 +809,14 @@ for BLOCK = 1 : 4
     if BLOCK == 4 && TRAINING == 0
         FinalText = ['You are done.' ...
             '\n\n Have a great day!'];
-        DrawFormattedText(ptbWindow,FinalText,'center','center',color.textVal);
-    Screen('Flip',ptbWindow);
+        DrawFormattedText(ptbWindow, FinalText, 'center', 'center', color.textVal);
+    elseif BLOCK == 1 && TRAINING == 0 || BLOCK == 2 && TRAINING == 0 || BLOCK == 3 && TRAINING == 0
+        BreakText = 'Enjoy your break...';
+        DrawFormattedText(ptbWindow, BreakText, 'center', 'center', color.textVal);
     end
+
+    Screen('Flip',ptbWindow);
+
 
     % Wait at least 30 Seconds between Blocks (only after Block 1 has finished, not after Block 2)
     % if TRAINING == 1 && percentTotalCorrect < THRESH

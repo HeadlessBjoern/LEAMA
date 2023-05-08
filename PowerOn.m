@@ -5,7 +5,7 @@
 defAns = {''};
 
 while true
-    prompt = {'\bf \fontsize{23} \color[rgb]{1,0,0} HAVE YOU TURNED THE POWER STRIP BACK ON? (if so, type "yes")'};
+    prompt = {'\bf \fontsize{19} \color[rgb]{1,0,0} HAVE YOU TURNED THE POWER STRIP BACK ON? (if so, press Ctrl+C and type "yes")'};
     options.Interpreter = 'tex';
     dims = [1 120];
     box = inputdlg(prompt, 'POWER', dims, defAns,options);
