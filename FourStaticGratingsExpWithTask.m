@@ -769,7 +769,7 @@ for BLOCK = 1 : 4
     %% Show break instruction text
     if TRAINING == 1 && BLOCK == 1
       %  if percentTotalCorrect >= THRESH
-            breakInstructionText = 'Well done! \n\n Press any key to start the actual task.';
+            breakInstructionText = 'Well done! \n\n Press any key to finalize the training block.';
      %   else
      %      breakInstructionText = ['Score too low! ' num2str(percentTotalCorrect) ' % correct. ' ...
      %           '\n\n Press any key to repeat the training task.'];
@@ -789,6 +789,11 @@ for BLOCK = 1 : 4
     while waitResponse
         [time, keyCode] = KbWait(-1,2);
         waitResponse = 0;
+    end
+
+    % Break for loop if it was the training block
+    if TRAINING == 1 && BLOCK == 1
+        break
     end
 
     % Create final screen
