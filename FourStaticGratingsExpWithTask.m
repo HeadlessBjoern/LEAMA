@@ -655,7 +655,7 @@ for BLOCK = 1 : 4
     filePath = fullfile(DATA_PATH, subjectID);
     mkdir(filePath)
     if TRAINING == 1
-        fileName = [subjectID '_', TASK, num2str(BLOCK), '_training.mat'];
+        fileName = [subjectID, '_training.mat'];
     elseif TRAINING == 0
         fileName = [subjectID '_', TASK, '_block' num2str(BLOCK), '_task.mat'];
     end
@@ -719,7 +719,7 @@ for BLOCK = 1 : 4
 
     % Save triggers
     trigger = struct;
-    %trigger.RESTING_START = par.CD_START;
+    trigger.RESTING_START = par.CD_START;
     trigger.BLOCK1 = BLOCK1;
     trigger.BLOCK2 = BLOCK2;
     trigger.BLOCK3 = BLOCK3;
@@ -742,7 +742,7 @@ for BLOCK = 1 : 4
     trigger.RESP_NO = NO_RESP;
     trigger.RESP_WRONG = RESP_WRONG;
 
-    %trigger.RESTING_END = par.CD_END;
+    trigger.RESTING_END = par.CD_END;
     trigger.BLOCK1_END = BLOCK1_END;
     trigger.BLOCK2_END = BLOCK2_END;
     trigger.BLOCK3_END = BLOCK3_END;

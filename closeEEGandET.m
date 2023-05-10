@@ -1,6 +1,6 @@
 % Stop EEG and ET recordings and save the data
 
-if TRAINING == 0
+if TRAINING == 0  %|| (TRAINING == 1 && RESTING == 1)
     % stop recoring EEG of current task:
     trigger = 2; % 2 stops the ANT Neuro
     sendtrigger(trigger,port,SITE,stayup)

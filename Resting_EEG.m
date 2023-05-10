@@ -1,6 +1,7 @@
 %% Resting state EEG
 
 TASK = 'Resting';
+% RESTING = 1;
 TRAINING = 0; % no training for Resting
 
 % Run Resting

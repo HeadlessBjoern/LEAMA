@@ -42,9 +42,15 @@ ListenChar(2);
 
 %% Execute Tasks in randomized order
 % BLOCK = 1;
+% TASK = 'G';
+%T RAINING = 1; % After training, set to 0 here
+Resting_EEG
+
+TRAINING = 1;
 TASK = 'G';
-Resting_EEG;
-TRAINING = 1; % After training, set to 0 here
+FourStaticGratingsExpWithTask;
+
+TRAINING = 0;
 FourStaticGratingsExpWithTask;
 
 %% Don't forget to turn on the power again...

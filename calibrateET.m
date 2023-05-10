@@ -23,7 +23,10 @@ if strcmp(TASK, 'Resting')
 else
     if TRAINING == 0 && strcmp(TASK, 'G')
         edfFile = [subjectID,'_', num2str(BLOCK), '.edf']; % Naming files according to blocks
+    elseif TRAINING == 1 && strcmp(TASK, 'G')
+        edfFile = [subjectID,'_tr.edf']; % Naming files according to blocks
     end
+
 end
 
 try
