@@ -358,12 +358,12 @@ for BLOCK = 1 : 4
         % Set durations for gratings and CFIs
         if mod(thisTrial,2) == 1
             % CFI trial
-            timing.cfi = (randsample(2000:4000, 1))/1000; % Randomize the jittered central fixation interval on trial
+            timing.cfi = (randsample(2000:3000, 1))/1000; % Randomize the jittered central fixation interval on trial
             timing.cfi_task = 0.5;
             maxTime = GetSecs + timing.cfi;
         elseif mod(thisTrial,2) == 0
             % Stimulus trial
-            StimuliDuration = 2.5;
+            StimuliDuration = 2;
             maxTime = GetSecs + StimuliDuration; % Set maxTime to max. 2 seconds from start of video
         end
 
@@ -379,11 +379,11 @@ for BLOCK = 1 : 4
 
             start_time = GetSecs;
 
-            % Photodiode: white and then black
-            Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
-            Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
+%             % Photodiode: white and then black
+%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % white background for photo diode
+%             Screen('Flip', ptbWindow);
+%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
 
             while (GetSecs - start_time) < timing.cfi
 
@@ -401,12 +401,12 @@ for BLOCK = 1 : 4
                 end
 
             end
-
-            % Photodiode: white and then black
-            Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
-            Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
+% 
+%             % Photodiode: white and then black
+%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
+%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
 
         else
 
@@ -487,11 +487,11 @@ for BLOCK = 1 : 4
 
             start_time = GetSecs;
 
-            % Photodiode: white and then black
-            Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
-            Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
+%             % Photodiode: white and then black
+%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
+%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
 
             while (GetSecs - start_time) < StimuliDuration
                 % Draw Texture, flip and wait for duration the stimuli should have
@@ -499,11 +499,11 @@ for BLOCK = 1 : 4
                 Screen('Flip', ptbWindow);
             end
 
-            % Photodiode: white and then black
-            Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
-            Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-            Screen('Flip', ptbWindow);
+%             % Photodiode: white and then black
+%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
+%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
 
         end
 
