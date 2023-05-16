@@ -7,16 +7,20 @@
 
 %% TASK
 
+% Check if mat files exist, in order to avoid overwriting these and start
+% at correct block in case of breakdown
 if TRAINING == 0
-    if isfile([DATA_PATH, '/', num2str(subjectID), '/', [num2str(subjectID), '_G_block3.mat']])
+    if isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_G_block3.mat']])
         start = 4;
-    elseif isfile([DATA_PATH, '/', num2str(subjectID), '/', [num2str(subjectID), '_G_block2.mat']])
+    elseif isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_G_block2.mat']])
         start = 3;
-    elseif isfile([DATA_PATH, '/', num2str(subjectID), '/', [num2str(subjectID), '_G_block1.mat']])
+    elseif isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_G_block1.mat']])
         start = 2;
     else
         start = 1;
     end
+elseif TRAINING == 1
+    start = 1;
 end
 
 
@@ -78,7 +82,7 @@ for BLOCK = start : 4
         experiment.nGratings = 8;
         experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
     else
-        experiment.nGratings = 1; % n gratings per block, normally 125
+        experiment.nGratings = 125; % n gratings per block, normally 125
         experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
     end
 
@@ -110,7 +114,7 @@ for BLOCK = start : 4
 
     % Set up text parameters
     text.instructionFont = 'Menlo';         % Font of instruction text
-    text.instructionPoints = 12;            % Size of instruction text (This if overwritten by )
+    text.instructionPoints = 10;            % Size of instruction text (This if overwritten by )
     text.instructionStyle = 0;              % Styling of instruction text (0 = normal)
     text.instructionWrap = 80;              % Number of characters at which to wrap instruction text
     text.color = 0;                         % Color of text (0 = black)
@@ -369,7 +373,7 @@ for BLOCK = start : 4
         keyFlags = zeros(1,256); % An array of zeros
         keyFlags(spaceKeyCode) = 1; % Monitor only spaces
         % GetKeyboardIndices; % For checking keyboard number
-        %  gki = 10; % has to be checked every time, that's why we created a dialog window now
+        %  gki = 9; % has to be checked every time, that's why we created a dialog window now
         KbQueueCreate(gki, keyFlags); % Initialize the Queue
 
         % Set durations for gratings and CFIs
@@ -670,7 +674,11 @@ for BLOCK = start : 4
     % Save data
     subjectID = num2str(subject.ID);
     filePath = fullfile(DATA_PATH, subjectID);
-    mkdir(filePath)
+    
+    if exist(filePath,'dir') == 0 % if matlab broke down and this is a retry, path could already exist
+        mkdir(filePath)
+    end
+
     if TRAINING == 1
         fileName = [subjectID, '_training.mat'];
     elseif TRAINING == 0
@@ -736,7 +744,7 @@ for BLOCK = start : 4
 
     % Save triggers
     trigger = struct;
-    trigger.RESTING_START = par.CD_START;
+    trigger.RESTING_START = 10;
     trigger.BLOCK1 = BLOCK1;
     trigger.BLOCK2 = BLOCK2;
     trigger.BLOCK3 = BLOCK3;
@@ -759,7 +767,7 @@ for BLOCK = start : 4
     trigger.RESP_NO = NO_RESP;
     trigger.RESP_WRONG = RESP_WRONG;
 
-    trigger.RESTING_END = par.CD_END;
+    trigger.RESTING_END = 90;
     trigger.BLOCK1_END = BLOCK1_END;
     trigger.BLOCK2_END = BLOCK2_END;
     trigger.BLOCK3_END = BLOCK3_END;
