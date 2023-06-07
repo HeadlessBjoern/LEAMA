@@ -1,17 +1,9 @@
 %% Gratings
 %
-% This script executes the paradigm with gatings of Lea's MA. 
+% This script executes the paradigm with Gratings of Lea's MA.
 %
 % This code requires PsychToolbox. https://psychtoolbox.org
 % This was tested with PsychToolbox version 3.0.15, and with MATLAB R2022a.
-
-%% Summary
-% 1. Definition of task, trial number / durations
-% 2. Block for loop: definition of triggers, text properties and introductory text
-% 3. Trial for loop: display fixation cross (20% red) and stimuli
-% 4. End of trial for loop: save trial data
-% 5. End of block for loop: save block data
-
 
 %% TASK
 
@@ -30,20 +22,6 @@ if TRAINING == 0
 elseif TRAINING == 1
     start = 1;
 end
-
-
-%% Define trial number and duration
-
-% Trial Number
-experiment.nGratingsTrain = 8;
-experiment.nGratingsTest = 125; % n gratings per block, normally 125
-
-% For Fixation Cross
-timing.cfilower = 2000; % lower limit of CFI duration
-timing.cfiupper = 3000; % upper limit of CFI duration
-
-% For Stimulus Trial
-timing.StimuliDuration = 2; 
 
 
 %% For loop
@@ -101,9 +79,11 @@ for BLOCK = start : 4
     % Set up experiment parameters
     % Number of trials for the experiment
     if TRAINING == 1
-        experiment.nTrials = experiment.nGratingsTrain * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
+        experiment.nGratings = 8;
+        experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
     else
-        experiment.nTrials = experiment.nGratingsTest * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
+        experiment.nGratings = 125; % n gratings per block, normally 125
+        experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
     end
 
     % Set up equipment parameters
@@ -396,14 +376,16 @@ for BLOCK = start : 4
         %  gki = 9; % has to be checked every time, that's why we created a dialog window now
         KbQueueCreate(gki, keyFlags); % Initialize the Queue
 
-        % Set durations for CFIs
-         if mod(thisTrial,2) == 1
+        % Set durations for gratings and CFIs
+        if mod(thisTrial,2) == 1
             % CFI trial
-            timing.cfi = (randsample(timing.cfilower:timing.cfiupper, 1))/1000; % Randomize the jittered central fixation interval on trial
-%             maxTime = GetSecs + timing.cfi;
-%         elseif mod(thisTrial,2) == 0
-%             % Stimulus trial
-%             maxTime = GetSecs + timing.StimuliDuration; % Set maxTime to max. 2 seconds from start of video
+            timing.cfi = (randsample(2000:3000, 1))/1000; % Randomize the jittered central fixation interval on trial
+            timing.cfi_task = 0.5;
+            maxTime = GetSecs + timing.cfi;
+        elseif mod(thisTrial,2) == 0
+            % Stimulus trial
+            StimuliDuration = 2;
+            maxTime = GetSecs + StimuliDuration; % Set maxTime to max. 2 seconds from start of video
         end
 
         % Start keyboard monitoring
@@ -417,6 +399,12 @@ for BLOCK = start : 4
             %% Present fixation cross
 
             start_time = GetSecs;
+
+%             % Photodiode: white and then black
+%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % white background for photo diode
+%             Screen('Flip', ptbWindow);
+%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
 
             while (GetSecs - start_time) < timing.cfi
 
@@ -434,7 +422,12 @@ for BLOCK = start : 4
                 end
 
             end
-
+% 
+%             % Photodiode: white and then black
+%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
+%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
 
         else
 
@@ -459,6 +452,7 @@ for BLOCK = start : 4
                 angle = 115;    % 35 times
             end
 
+            StimuliDuration = 2;
             texsize = 200;
             greyVal = 0.5;
             f = 0.05;
@@ -514,13 +508,25 @@ for BLOCK = start : 4
 
             start_time = GetSecs;
 
-            while (GetSecs - start_time) < timing.StimuliDuration
+%             % Photodiode: white and then black
+%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
+%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
+
+            while (GetSecs - start_time) < StimuliDuration
                 % Draw Texture, flip and wait for duration the stimuli should have
                 Screen('DrawTexture', ptbWindow, gratingtex1, srcRect, [], angle);
                 Screen('Flip', ptbWindow);
             end
 
-        end 
+%             % Photodiode: white and then black
+%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
+%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+%             Screen('Flip', ptbWindow);
+
+        end
 
 
 
@@ -578,6 +584,10 @@ for BLOCK = start : 4
 
         %     end
 
+        % Make photodiode area black again
+        %     Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
+        %     Screen('Flip', ptbWindow);
+
 
 
         if mod(thisTrial,2) == 1
@@ -613,10 +623,8 @@ for BLOCK = start : 4
         %     Screen('DrawLines',ptbWindow,fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2); % Draw fixation cross
         %     Screen('Flip', ptbWindow, [], 1);
 
-
-
-        %% End for loop over all trials
-    end % trial loop
+        %% End for loop over all videos
+    end
 
     % Wait a few seconds before continuing in order to record the last stimuli presentation
     WaitSecs(4)
@@ -899,8 +907,7 @@ for BLOCK = start : 4
     %         waitResponse = 0;
     %     end
     % end
-    %% End for loop over all blocks
-end 
+end
 
 
 

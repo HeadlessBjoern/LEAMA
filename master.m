@@ -46,19 +46,19 @@ ListenChar(2);
 %T RAINING = 1; % After training, set to 0 here
 
 if ~isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_Resting.mat']])
-    Resting_EEG
+    restingEEG
 end
 
 if ~isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_training.mat']])
     TRAINING = 1;
     TASK = 'G';
-    FourStaticGratingsExpWithTask;
+    fourStaticGratingsWithTask;
 end
 
 if ~isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_G_block4.mat']])
     TRAINING = 0;
     TASK = 'G';
-    FourStaticGratingsExpWithTask;
+    fourStaticGratingsWithTask;
 end
 
 %% Don't forget to turn on the power again...
