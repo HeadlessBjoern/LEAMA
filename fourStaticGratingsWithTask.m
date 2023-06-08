@@ -1,20 +1,33 @@
 %% Gratings
 %
-% This script executes the paradigm with Gratings of Lea's MA.
+% This script executes the paradigm with gatings of Lea's MA. 
 %
 % This code requires PsychToolbox. https://psychtoolbox.org
 % This was tested with PsychToolbox version 3.0.15, and with MATLAB R2022a.
+
+%% Summary
+% 1. Definition of task, trial number / durations
+% 2. Block for loop: definition of triggers, text properties and introductory text
+% 3. Trial for loop: display fixation cross (20% red) and stimuli
+% 4. End of trial for loop: save trial data
+% 5. End of block for loop: save block data
+
 
 %% TASK
 
 % Check if mat files exist, in order to avoid overwriting these and start
 % at correct block in case of breakdown
 if TRAINING == 0
-    if isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_G_block3.mat']])
+    if isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_G_block4.mat']])
+        return
+    elseif isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_G_block3.mat']])
+        disp('BLOCK 3 DATA ALREADY EXISTS');
         start = 4;
     elseif isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_G_block2.mat']])
+        disp('BLOCK 2 DATA ALREADY EXISTS');
         start = 3;
     elseif isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_G_block1.mat']])
+        disp('BLOCK 1 DATA ALREADY EXISTS');
         start = 2;
     else
         start = 1;
@@ -24,9 +37,31 @@ elseif TRAINING == 1
 end
 
 
+%% Define trial number and duration
+
+% Block and Trial Number
+NumberOfBlocks = 4;
+experiment.nGratingsTrain = 8; % n gratings per train block, normally 8
+experiment.nGratingsTest = 125; % n gratings per test block, normally 125
+
+if TRAINING == 1
+    experiment.nGratings = experiment.nGratingsTrain;
+elseif TRAINING == 0
+    experiment.nGratings = experiment.nGratingsTest;
+end
+
+% For Fixation Cross
+timing.cfilower = 2000; % lower limit of CFI duration
+timing.cfiupper = 3000; % upper limit of CFI duration
+timing.cfi_task = 0.5;
+
+% For Stimulus Trial
+timing.StimuliDuration = 2; 
+
+
 %% For loop
 
-for BLOCK = start : 4
+for BLOCK = start : NumberOfBlocks
     % Start the actual task (EEG recording will start here, if TRAINING = 0)
     disp('GRATING TASK...');
     WaitSecs(10);
@@ -79,11 +114,9 @@ for BLOCK = start : 4
     % Set up experiment parameters
     % Number of trials for the experiment
     if TRAINING == 1
-        experiment.nGratings = 8;
-        experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
+        experiment.nTrials = experiment.nGratingsTrain * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
     else
-        experiment.nGratings = 125; % n gratings per block, normally 125
-        experiment.nTrials = experiment.nGratings * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
+        experiment.nTrials = experiment.nGratingsTest * 2;   % for each grating video, there should be a fixation cross => hence nTrial should be nGratings times two
     end
 
     % Set up equipment parameters
@@ -107,17 +140,8 @@ for BLOCK = start : 4
     stimulus.regionEccentricity_dva = 3;     % Eccentricity of regions from central fixation
 
     % Set up color parameters
-    stimulus.nColors = 2;                   % Number of colors used in the experiment
-    color.white = [255, 255, 255];
-    color.grey = [128, 128, 128];
     color.textVal = 0;                      % Color of text (0 = black)
 
-    % Set up text parameters
-    text.instructionFont = 'Menlo';         % Font of instruction text
-    text.instructionPoints = 10;            % Size of instruction text (This if overwritten by )
-    text.instructionStyle = 0;              % Styling of instruction text (0 = normal)
-    text.instructionWrap = 80;              % Number of characters at which to wrap instruction text
-    text.color = 0;                         % Color of text (0 = black)
 
     % Define startExperimentText
     if TRAINING == 1
@@ -126,7 +150,7 @@ for BLOCK = start : 4
             'You will see a series of gratings. \n\n' ...
             'Your task is to press SPACE if you see \n\n' ...
             'a red fixation cross appearing for a short time. \n\n' ...
-            'Otherwise, do not press any button. \n\n' ...
+            'Otherwise, do not press any key. \n\n' ...
             'Please always look at the screen center \n\n' ...
             'and use your right hand. \n\n' ...
             'Press any key to continue.'];
@@ -136,7 +160,7 @@ for BLOCK = start : 4
             'You will see a series of gratings. \n\n' ...
             'Your task is to press SPACE if you see \n\n' ...
             'a red fixation cross appearing for a short time. \n\n' ...
-            'Otherwise, do not press any button. \n\n' ...
+            'Otherwise, do not press any key. \n\n' ...
             'Please always look at the screen center \n\n' ...
             'and use your right hand. \n\n' ...
             'Press any key to continue.'];
@@ -158,7 +182,7 @@ for BLOCK = start : 4
     PsychImaging('AddTask', 'FinalFormatting', 'DisplayColorCorrection', 'SimpleGamma');
     PsychImaging('AddTask', 'General', 'FloatingPoint32BitIfPossible');
     PsychImaging('AddTask', 'General', 'NormalizedHighresColorRange');
-    Screen('Preference', 'SkipSyncTests', 0); % For linux
+    Screen('Preference', 'SkipSyncTests', 0); % For lin.ux
 
     % Window set-up
     [ptbWindow, winRect] = PsychImaging('OpenWindow', screenID, equipment.greyVal);
@@ -202,8 +226,11 @@ for BLOCK = start : 4
     data.allResponses(1:experiment.nGratings) = NaN;
     data.allCorrect(1:experiment.nGratings) = NaN;
 
-    % Preallocate reaction time varible
+    % Preallocate reaction time variable
     reactionTime(1:experiment.nGratings) = 0;
+
+    % Preallocate cfi timing variable
+    timing.cfi(1:experiment.nGratings) = 0;
 
     % Define grating and cross sequences
     Shuffle;
@@ -376,16 +403,15 @@ for BLOCK = start : 4
         %  gki = 9; % has to be checked every time, that's why we created a dialog window now
         KbQueueCreate(gki, keyFlags); % Initialize the Queue
 
-        % Set durations for gratings and CFIs
-        if mod(thisTrial,2) == 1
+
+        % Set durations for CFIs
+         if mod(thisTrial,2) == 1
             % CFI trial
-            timing.cfi = (randsample(2000:3000, 1))/1000; % Randomize the jittered central fixation interval on trial
-            timing.cfi_task = 0.5;
-            maxTime = GetSecs + timing.cfi;
-        elseif mod(thisTrial,2) == 0
-            % Stimulus trial
-            StimuliDuration = 2;
-            maxTime = GetSecs + StimuliDuration; % Set maxTime to max. 2 seconds from start of video
+            timing.cfi(thisCFI) = (randsample(timing.cfilower:timing.cfiupper, 1))/1000; % Randomize the jittered central fixation interval on trial
+%             maxTime = GetSecs + timing.cfi;
+%         elseif mod(thisTrial,2) == 0
+%             % Stimulus trial
+%             maxTime = GetSecs + timing.StimuliDuration; % Set maxTime to max. 2 seconds from start of video
         end
 
         % Start keyboard monitoring
@@ -400,34 +426,23 @@ for BLOCK = start : 4
 
             start_time = GetSecs;
 
-%             % Photodiode: white and then black
-%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % white background for photo diode
-%             Screen('Flip', ptbWindow);
-%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-%             Screen('Flip', ptbWindow);
-
-            while (GetSecs - start_time) < timing.cfi
+            while (GetSecs - start_time) < timing.cfi(thisCFI)
 
                 if crossSequence(thisCFI) == 0 % No task condition
                     Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor0,[screenCentreX screenCentreY],2);
                     Screen('Flip', ptbWindow)
-                    WaitSecs(timing.cfi)
+                    WaitSecs(timing.cfi(thisCFI))
                 elseif crossSequence(thisCFI) == 1 % Task condition
                     Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor1,[screenCentreX screenCentreY],2);
                     Screen('Flip', ptbWindow)
                     WaitSecs(timing.cfi_task) % Show red cross for a short time
                     Screen('DrawLines', ptbWindow, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor0,[screenCentreX screenCentreY],2);
                     Screen('Flip', ptbWindow)
-                    WaitSecs(timing.cfi-timing.cfi_task) % Show black cross for the rest of the CFI time
+                    WaitSecs(timing.cfi(thisCFI)-timing.cfi_task) % Show black cross for the rest of the CFI time
                 end
 
             end
-% 
-%             % Photodiode: white and then black
-%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-%             Screen('Flip', ptbWindow);
-%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-%             Screen('Flip', ptbWindow);
+
 
         else
 
@@ -452,7 +467,6 @@ for BLOCK = start : 4
                 angle = 115;    % 35 times
             end
 
-            StimuliDuration = 2;
             texsize = 200;
             greyVal = 0.5;
             f = 0.05;
@@ -508,25 +522,13 @@ for BLOCK = start : 4
 
             start_time = GetSecs;
 
-%             % Photodiode: white and then black
-%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-%             Screen('Flip', ptbWindow);
-%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-%             Screen('Flip', ptbWindow);
-
-            while (GetSecs - start_time) < StimuliDuration
+            while (GetSecs - start_time) < timing.StimuliDuration
                 % Draw Texture, flip and wait for duration the stimuli should have
                 Screen('DrawTexture', ptbWindow, gratingtex1, srcRect, [], angle);
                 Screen('Flip', ptbWindow);
             end
 
-%             % Photodiode: white and then black
-%             Screen('DrawDots', ptbWindow, stimPos, stimDiameter, stimColor,[],1); % black background for photo diode
-%             Screen('Flip', ptbWindow);
-%             Screen('DrawDots', ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-%             Screen('Flip', ptbWindow);
-
-        end
+        end 
 
 
 
@@ -584,10 +586,6 @@ for BLOCK = start : 4
 
         %     end
 
-        % Make photodiode area black again
-        %     Screen('DrawDots',ptbWindow, backPos, backDiameter, backColor,[],1); % black background for photo diode
-        %     Screen('Flip', ptbWindow);
-
 
 
         if mod(thisTrial,2) == 1
@@ -623,8 +621,10 @@ for BLOCK = start : 4
         %     Screen('DrawLines',ptbWindow,fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2); % Draw fixation cross
         %     Screen('Flip', ptbWindow, [], 1);
 
-        %% End for loop over all videos
-    end
+
+
+        %% End for loop over all trials
+    end % trial loop
 
     % Wait a few seconds before continuing in order to record the last stimuli presentation
     WaitSecs(4)
@@ -726,6 +726,7 @@ for BLOCK = start : 4
     saves = struct;
     saves.data = data;
     saves.data.spaceKeyCode = spaceKeyCode;
+    saves.data.reactionTime = reactionTime;
     saves.experiment = experiment;
     saves.screenWidth = screenWidth;
     saves.screenHeight = screenHeight;
@@ -736,11 +737,9 @@ for BLOCK = start : 4
     saves.stimulus = stimulus;
     saves.subjectID = subjectID;
     saves.subject = subject;
-    saves.text = text;
     saves.timing = timing;
     saves.waitResponse = waitResponse;
     saves.flipInterval = flipInterval;
-    saves.reactionTime = reactionTime;
 
     % Save triggers
     trigger = struct;
@@ -907,7 +906,8 @@ for BLOCK = start : 4
     %         waitResponse = 0;
     %     end
     % end
-end
+    %% End for loop over all blocks
+end 
 
 
 
