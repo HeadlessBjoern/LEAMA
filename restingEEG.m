@@ -19,9 +19,11 @@ calibrateET;
 testmode = 0;
 monitorwidth_cm = 53;
 dist_cm = 70;
+
+% Duration
+NrOfTrials = 2;   % How many cycles to run (8 if you want to run 6 cycles, 7 trials is 5 minutes)
+
 % Text
-
-
 tSize1 = 18;
 tSize2 = 25;
 tSize3 = 35;
@@ -51,7 +53,6 @@ ins.resting.end = [...
     'Other tasks will follow now. '...
     ];
 %% Trials
-NrOfTrials = 7;   % How many Cycles to run (8 if you want to run 6 cycles) (7 trials is 5m inutes)
 eyeO = 3:60:303; % Audio cues
 eyeC = 23:60:323;
 

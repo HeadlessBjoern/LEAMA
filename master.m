@@ -52,13 +52,13 @@ end
 if ~isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_training.mat']])
     TRAINING = 1;
     TASK = 'G';
-    fourStaticGratingsWithTask;
+    FourStaticGratingsWithTask;
 end
 
 if ~isfile([DATA_PATH, '/', num2str(subject.ID), '/', [num2str(subject.ID), '_G_block4.mat']])
     TRAINING = 0;
     TASK = 'G';
-    fourStaticGratingsWithTask;
+    FourStaticGratingsWithTask;
 end
 
 %% Don't forget to turn on the power again...

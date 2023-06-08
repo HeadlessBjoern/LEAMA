@@ -35,8 +35,8 @@ end
 %% Define trial number and duration
 
 % Trial Number
-experiment.nGratingsTrain = 1;
-experiment.nGratingsTest = 3; % n gratings per block, normally 125
+experiment.nGratingsTrain = 8;
+experiment.nGratingsTest = 125; % n gratings per block, normally 125
 
 % For Fixation Cross
 timing.cfilower = 2000; % lower limit of CFI duration
@@ -223,7 +223,7 @@ for BLOCK = start : 4
     data.allResponses(1:experiment.nGratings) = NaN;
     data.allCorrect(1:experiment.nGratings) = NaN;
 
-    % Preallocate reaction time variable
+    % Preallocate reaction time varible
     reactionTime(1:experiment.nGratings) = 0;
 
     % Define grating and cross sequences
@@ -397,8 +397,8 @@ for BLOCK = start : 4
         %  gki = 9; % has to be checked every time, that's why we created a dialog window now
         KbQueueCreate(gki, keyFlags); % Initialize the Queue
 
-        % Preallocate cfi timing variable
-        timing.cfi(1:experiment.nGratings) = 0;
+        % Preallocate reaction time varible
+        reactionTime(1:experiment.nGratings) = 0;
 
         % Set durations for CFIs
          if mod(thisTrial,2) == 1
