@@ -79,7 +79,7 @@ tt = 1;
 
 %% Experiment ptbWindow
 clc;
-ptbWindow=Screen('OpenWindow', whichScreen, par.BGcolor); % dont need to open a screen again
+ptbWindow = Screen('OpenWindow', whichScreen, par.BGcolor); % dont need to open a screen again
 
 Screen('TextSize', ptbWindow, tSize2);
 DrawFormattedText(ptbWindow, ins.resting.inst, scresw / 3, scresh / 3, colorText);
