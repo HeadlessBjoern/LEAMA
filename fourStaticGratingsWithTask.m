@@ -171,7 +171,7 @@ for BLOCK = start : 4
     experiment.runPriority = MaxPriority(ptbWindow);
 
     % Set font size for instructions and stimuli
-    Screen('TextSize', ptbWindow, 40);
+    Screen('TextSize', ptbWindow, 36);
 
     global psych_default_colormode;                     % Sets colormode to be unclamped   0-1 range.
     psych_default_colormode = 1;
@@ -206,7 +206,7 @@ for BLOCK = start : 4
     reactionTime(1:experiment.nGratings) = 0;
 
     % Define grating and cross sequences
-    shuffle;
+    Shuffle;
     if TRAINING == 1 && BLOCK == 1
         gratingSequence = gratingSequence0;
     elseif TRAINING == 0 && BLOCK == 1

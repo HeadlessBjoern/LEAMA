@@ -20,6 +20,8 @@ testmode = 0;
 monitorwidth_cm = 53;
 dist_cm = 70;
 % Text
+
+
 tSize1 = 18;
 tSize2 = 25;
 tSize3 = 35;
@@ -31,8 +33,8 @@ colorBrightGray = [];
 colorDarkGray = [];
 
 %% Instructions
-ins=struct();
-ins.misc=struct();
+ins = struct();
+ins.misc = struct();
 ins.misc.mouse = [...
     'Press any key to start the task'...
     ];
@@ -46,7 +48,7 @@ ins.resting.inst = [...
     '\n\nFocus your gaze on this cross. \n'...
     ];
 ins.resting.end = [...
-    'Nun folgen weitere Aufgaben. '...
+    'Other tasks will follow now. '...
     ];
 %% Trials
 NrOfTrials = 7;   % How many Cycles to run (8 if you want to run 6 cycles) (7 trials is 5m inutes)
@@ -62,10 +64,10 @@ par.CD_END  = 90;
 
 
 %% Screen Calculations
-[scresw, scresh]=Screen('WindowSize',whichScreen);  % Get screen resolution
+[scresw, scresh] = Screen('WindowSize',whichScreen);  % Get screen resolution
 center = [scresw scresh]/2;     % useful to have the pixel coordinates of the very center of the screen (usually where you have someone fixate)
 fixRect = [center-2 center+2];  % fixation dot
-hz=Screen('FrameRate', whichScreen, 1);
+hz = Screen('FrameRate', whichScreen, 1);
 cm2px = scresw/monitorwidth_cm;     % multiplication factor to convert cm to pixels
 deg2px = dist_cm*cm2px*pi/180;      % multiplication factor to convert degrees to pixels (uses aproximation tanT ~= T).
 load gammafnCRT;   % load the gamma function parameters for this monitor - or some other CRT and hope they're similar! (none of our questions rely on precise quantification of physical contrast)
@@ -82,8 +84,9 @@ clc;
 ptbWindow = Screen('OpenWindow', whichScreen, par.BGcolor); % dont need to open a screen again
 
 Screen('TextSize', ptbWindow, tSize2);
-DrawFormattedText(ptbWindow, ins.resting.inst, scresw / 3, scresh / 3, colorText);
-DrawFormattedText(ptbWindow, ins.misc.mouse,'center', 0.9*scresh, colorText);
+Screen('TextFont', ptbWindow, 'Menlo');
+DrawFormattedText(ptbWindow, ins.resting.inst, 'center', 'center', colorText) %scresw / 3, scresh / 3, colorText);
+DrawFormattedText(ptbWindow, ins.misc.mouse,'center', 0.8*scresh, colorText) %0.9*scresh, colorText);
 Screen('Flip', ptbWindow);
 
 HideCursor(whichScreen);
