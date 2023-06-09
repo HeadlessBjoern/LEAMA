@@ -99,11 +99,11 @@ for BLOCK = start : NumberOfBlocks
     PRESENTATION6 = 26; % trigger for presentation of low vertical
     PRESENTATION7 = 27; % trigger for presentation of low 45
     PRESENTATION8 = 28; % trigger for presentation of low 115
-    STIMOFF = 29; % trigger for change of grating to cfi
+%     STIMOFF = 29; % trigger for change of grating to cfi
     
     RESP = 87; % trigger for response yes (spacebar)
     NO_RESP = 88; % trigger for response no (no input)
-    RESP_WRONG = 89; % trigger for wrong keyboard input response
+%     RESP_WRONG = 89; % trigger for wrong keyboard input response
     
     BLOCK1_END = 91;
     BLOCK2_END = 92;
@@ -760,11 +760,11 @@ for BLOCK = start : NumberOfBlocks
     trigger.PRESENTATION6 = PRESENTATION6;
     trigger.PRESENTATION7 = PRESENTATION7;
     trigger.PRESENTATION8 = PRESENTATION8;
-    trigger.STIMOFF = STIMOFF;
+%     trigger.STIMOFF = STIMOFF;
 
     trigger.RESP_YES = RESP;
     trigger.RESP_NO = NO_RESP;
-    trigger.RESP_WRONG = RESP_WRONG;
+%     trigger.RESP_WRONG = RESP_WRONG;
 
     trigger.RESTING_END = 90;
     trigger.BLOCK1_END = BLOCK1_END;
