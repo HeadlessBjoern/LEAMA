@@ -87,7 +87,7 @@ try
     if gray == white
       gray=white / 2;
     end
-    inc=white-gray;
+    inc = (white-gray)/2; % for a 50% contrast!!
 
     % Open a double buffered fullscreen window with a gray background:
     w =Screen('OpenWindow',screenNumber, gray);
