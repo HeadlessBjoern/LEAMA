@@ -23,8 +23,7 @@ function ProceduralColorGratingDemo(color1,color2,baseColor)
 
     % Round gray to integral number, to avoid roundoff artifacts with some
     % graphics cards:
-    gray=round((white+black)/2);
-    change = (white-gray)/2;
+
 if ~exist('color1','var') || isempty(color1)
     %     color1 = [gray-change gray-change gray-change 1];
     color1 = [0.75 0.75 0.75 1];
