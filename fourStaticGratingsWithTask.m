@@ -448,7 +448,6 @@ for BLOCK = start : NumberOfBlocks
 
             %% Present grating depending on sequence number
 
-
             if gratingSequence(thisGrating) == 1
                 angle = 90;
             elseif gratingSequence(thisGrating) == 2
@@ -467,67 +466,161 @@ for BLOCK = start : NumberOfBlocks
                 angle = 115;    % 35 times
             end
 
-            texsize = 200;
-            greyVal = 0.5;
-            f = 0.05;
-
-            AssertOpenGL;
-
-            % Find the color values which correspond to white and black.
-            white = WhiteIndex(screenID);
-            black = BlackIndex(screenID);
-
-            % Round gray to integral number, to avoid roundoff artifacts with some graphics cards:
-            gray = round((white+black)/2);
-
-            % This makes sure that on floating point framebuffers we still get a
-            % well defined gray. It isn't strictly neccessary in this demo:
-            if gray == white
-                gray = white / 2;
-            end
-            inc = white-gray;
-
-            % Make sure this GPU supports shading at all:
-            AssertGLSL;
-
-            % Calculate parameters of the grating:
-            p = ceil(1/f); % pixels/cycle, rounded up.
-            fr = f*2*pi;
-            visiblesize = 2*texsize+1;
-
-            % Create one single static grating image:
-            x = meshgrid(-texsize:texsize + p, -texsize:texsize);
-            grating = gray + inc*cos(fr*x);
-
-            % Create circular aperture for the alpha-channel:
-            [x,y] = meshgrid(-texsize:texsize, -texsize:texsize);
 
             if gratingSequence(thisGrating) == 1 || gratingSequence(thisGrating) == 2 || gratingSequence(thisGrating) == 3 || gratingSequence(thisGrating) == 4
-                circle = white * (x.^2 + y.^2 <= (texsize)^2);
-            elseif gratingSequence(thisGrating) == 5 || gratingSequence(thisGrating) == 6 || gratingSequence(thisGrating) == 7 || gratingSequence(thisGrating) == 8 
-                circle = gray * (x.^2 + y.^2 <= (texsize)^2);
+                color1 = [0 0 0 1];
+                color2 = [1 1 1 1];
+            elseif gratingSequence(thisGrating) == 5 || gratingSequence(thisGrating) == 6 || gratingSequence(thisGrating) == 7 || gratingSequence(thisGrating) == 8
+                color2 = [0.25 0.25 0.25 1];
+                color2 = [0.25 0.25 0.25 1];
             end
 
+            baseColor = [0.5 0.5 0.5 1];
 
-            % Set 2nd channel (the alpha channel) of 'grating' to the aperture
-            % defined in 'circle':
-            grating(:,:,2) = 0;
-            grating(1:2*texsize+1, 1:2*texsize+1, 2) = circle;
+            % Setup defaults and unit color range:
+            PsychDefaultSetup(2);
 
-            % Store alpha-masked grating in texture:
-            gratingtex1 = Screen('MakeTexture', ptbWindow, grating, [], [], [], []);
+            % Disable synctests for this quick demo:
+%             oldSyncLevel = Screen('Preference', 'SkipSyncTests', 2);
 
-            % Definition of the drawn source rectangle on the screen:
-            srcRect = [0 0 visiblesize visiblesize];
+            % Select screen with maximum id for output window:
+            % screenid = max(Screen('Screens'));
 
+            % Open a fullscreen, onscreen window with gray background. Enable 32bpc
+            % floating point framebuffer via imaging pipeline on it, if this is possible
+            % on your hardware while alpha-blending is enabled. Otherwise use a 16bpc
+            % precision framebuffer together with alpha-blending.
+            % PsychImaging('PrepareConfiguration');
+            % PsychImaging('AddTask', 'General', 'FloatingPoint32BitIfPossible');
+            % [win, winRect] = PsychImaging('OpenWindow', screenid, baseColor);
+
+            % Query frame duration: We use it later on to time 'Flips' properly for an
+            % animation with constant framerate:
+            ifi = Screen('GetFlipInterval', ptbWindow);
+
+            % Enable alpha-blending
+            % Screen('BlendFunction', win, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
+
+            % default x + y size
+            virtualSize = 400;
+            % radius of the disc edge
+            radius = floor(virtualSize / 2);
+
+            % Build a procedural texture, we also keep the shader as we will show how to
+            % modify it (though not as efficient as using parameters in drawtexture)
+            texture = CreateProceduralColorGrating(ptbWindow, virtualSize, virtualSize,...
+                color1, color2, radius);
+
+            % These settings are the parameters passed in directly to DrawTexture
+            % angle
+            % phase
+            phase = 0;
+            % spatial frequency
+            frequency = 0.05;
+            % contrast
+            contrast = 0.5;
+            % sigma < 0 is a sinusoid.
+            sigma = -1.0;
+
+            % Preperatory flip
+            % showTime = 3;
+            vbl = Screen('Flip', ptbWindow);
+            % tstart = vbl + ifi; %start is on the next frame
             start_time = GetSecs;
 
             while (GetSecs - start_time) < timing.StimuliDuration
-                % Draw Texture, flip and wait for duration the stimuli should have
-                Screen('DrawTexture', ptbWindow, gratingtex1, srcRect, [], angle);
-                Screen('Flip', ptbWindow);
+                % Draw a message
+%                 Screen('DrawText', ptbWindow, 'Standard Color Sinusoidal Grating', 10, 10, [1 1 1]);
+                % Draw the shader texture with parameters
+                Screen('DrawTexture', ptbWindow, texture, [], [],...
+                    angle, [], [], baseColor, [], [],...
+                    [phase, frequency, contrast, sigma]);
+
+                vbl = Screen('Flip', ptbWindow, vbl * ifi);
+                %     phase = phase - 15;
             end
 
+
+
+%             if gratingSequence(thisGrating) == 1
+%                 angle = 90;
+%             elseif gratingSequence(thisGrating) == 2
+%                 angle = 0;      % 35 times
+%             elseif gratingSequence(thisGrating) == 3
+%                 angle = 45;     % 35 times
+%             elseif gratingSequence(thisGrating) == 4
+%                 angle = 115;    % 35 times
+%             elseif gratingSequence(thisGrating) == 5
+%                 angle = 90;     % 35 times
+%             elseif gratingSequence(thisGrating) == 6
+%                 angle = 0;      % 35 times
+%             elseif gratingSequence(thisGrating) == 7
+%                 angle = 45;     % 35 times
+%             elseif gratingSequence(thisGrating) == 8
+%                 angle = 115;    % 35 times
+%             end
+% 
+%             texsize = 200;
+%             greyVal = 0.5;
+%             f = 0.05;
+% 
+%             AssertOpenGL;
+% 
+%             % Find the color values which correspond to white and black.
+%             white = WhiteIndex(screenID);
+%             black = BlackIndex(screenID);
+% 
+%             % Round gray to integral number, to avoid roundoff artifacts with some graphics cards:
+%             gray = round((white+black)/2);
+% 
+%             % This makes sure that on floating point framebuffers we still get a
+%             % well defined gray. It isn't strictly neccessary in this demo:
+%             if gray == white
+%                 gray = white / 2;
+%             end
+%             inc = white-gray;
+% 
+%             % Make sure this GPU supports shading at all:
+%             AssertGLSL;
+% 
+%             % Calculate parameters of the grating:
+%             p = ceil(1/f); % pixels/cycle, rounded up.
+%             fr = f*2*pi;
+%             visiblesize = 2*texsize+1;
+% 
+%             % Create one single static grating image:
+%             x = meshgrid(-texsize:texsize + p, -texsize:texsize);
+%             grating = gray + inc*cos(fr*x);
+% 
+%             % Create circular aperture for the alpha-channel:
+%             [x,y] = meshgrid(-texsize:texsize, -texsize:texsize);
+% 
+%             if gratingSequence(thisGrating) == 1 || gratingSequence(thisGrating) == 2 || gratingSequence(thisGrating) == 3 || gratingSequence(thisGrating) == 4
+%                 circle = white * (x.^2 + y.^2 <= (texsize)^2);
+%             elseif gratingSequence(thisGrating) == 5 || gratingSequence(thisGrating) == 6 || gratingSequence(thisGrating) == 7 || gratingSequence(thisGrating) == 8 
+%                 circle = gray * (x.^2 + y.^2 <= (texsize)^2);
+%             end
+% 
+% 
+%             % Set 2nd channel (the alpha channel) of 'grating' to the aperture
+%             % defined in 'circle':
+%             grating(:,:,2) = 0;
+%             grating(1:2*texsize+1, 1:2*texsize+1, 2) = circle;
+% 
+%             % Store alpha-masked grating in texture:
+%             gratingtex1 = Screen('MakeTexture', ptbWindow, grating, [], [], [], []);
+% 
+%             % Definition of the drawn source rectangle on the screen:
+%             srcRect = [0 0 visiblesize visiblesize];
+% 
+%             start_time = GetSecs;
+% 
+%             while (GetSecs - start_time) < timing.StimuliDuration
+%                 % Draw Texture, flip and wait for duration the stimuli should have
+%                 Screen('DrawTexture', ptbWindow, gratingtex1, srcRect, [], angle);
+%                 Screen('Flip', ptbWindow);
+%             end
+% 
         end 
 
 
