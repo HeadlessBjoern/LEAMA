@@ -1,5 +1,6 @@
 %% DriftDemo6 editet (high contrast, slow)
 
+
 function DriftDemo6_lowCfast(angle, cyclespersecond, f)
 % function DriftDemo6(angle, cyclespersecond, f)
 % ___________________________________________________________________
@@ -57,7 +58,7 @@ end;
 
 if nargin < 2 || isempty(cyclespersecond)
     % Speed of grating in cycles per second:
-    cyclespersecond=2;
+    cyclespersecond=1;
 end;
 
 if nargin < 1 || isempty(angle)
@@ -77,17 +78,23 @@ try
     % Find the color values which correspond to white and black.
     white=WhiteIndex(screenNumber);
     black=BlackIndex(screenNumber);
-
+%     darkgray = gray - 60;
+%     a = 0;
+%     while (a == 0)
+%         Screen('FillRect', w, darkgray)
+%         Screen('Flip', w)
+%     end
     % Round gray to integral number, to avoid roundoff artifacts with some
     % graphics cards:
     gray=round((white+black)/2);
-
+%     gray = 255/2
     %This makes sure that on floating point framebuffers we still get a
     %well defined gray. It isn't strictly neccessary in this demo:
     if gray == white
       gray=white / 2;
     end
-    inc = (white-gray)/2; % for a 50% contrast!!
+     inc = white-gray; % for a 50% contrast!!
+%     inc = (255-gray)/2;
 
     % Open a double buffered fullscreen window with a gray background:
     w =Screen('OpenWindow',screenNumber, gray);
@@ -112,12 +119,12 @@ try
 
     % Create circular aperture for the alpha-channel:
     [x,y]=meshgrid(-texsize:texsize, -texsize:texsize);
-    circle = gray * (x.^2 + y.^2 <= (texsize)^2);
+%      circle = white * (x.^2 + y.^2 <= (texsize)^2);
 
     % Set 2nd channel (the alpha channel) of 'grating' to the aperture
     % defined in 'circle':
-    grating(:,:,2) = 0;
-    grating(1:2*texsize+1, 1:2*texsize+1, 2) = circle;
+%     grating(:,:,2) = 0;
+%     grating(1:2*texsize+1, 1:2*texsize+1, 2) = circle;
 
     % Store alpha-masked grating in texture and attach the special 'glsl'
     % texture shader to it:
@@ -126,31 +133,31 @@ try
 
 
     
-    % Build a second drifting grating texture, this time half the texsize
-    % of the 1st texture:
-    texsize = ceil(texsize/2);
-    visible2size = 2*texsize+1;
-    x = meshgrid(-texsize:texsize + p, -texsize:texsize);
-    grating = gray + inc*cos(fr*x);
-
-    % Create circular aperture for the alpha-channel:
-    [x,y]=meshgrid(-texsize:texsize, -texsize:texsize);
-    circle = gray * (x.^2 + y.^2 <= (texsize)^2);
-
-    % Set 2nd channel (the alpha channel) of 'grating' to the aperture
-    % defined in 'circle':
-    grating(:,:,2) = 0;
-    grating(1:2*texsize+1, 1:2*texsize+1, 2) = circle;
-
-    % Store alpha-masked grating in texture and attach the special 'glsl'
-    % texture shader to it:
-    gratingtex2 = Screen('MakeTexture', w, grating, [], [], [], [], glsl);
+%     % Build a second drifting grating texture, this time half the texsize
+%     % of the 1st texture:
+%     texsize = ceil(texsize/2);
+%     visible2size = 2*texsize+1;
+%     x = meshgrid(-texsize:texsize + p, -texsize:texsize);
+%     grating = gray + inc*cos(fr*x);
+% 
+%     % Create circular aperture for the alpha-channel:
+%     [x,y]=meshgrid(-texsize:texsize, -texsize:texsize);
+%     circle = white * (x.^2 + y.^2 <= (texsize)^2);
+% 
+%     % Set 2nd channel (the alpha channel) of 'grating' to the aperture
+%     % defined in 'circle':
+%     grating(:,:,2) = 0;
+%     grating(1:2*texsize+1, 1:2*texsize+1, 2) = circle;
+% 
+%     % Store alpha-masked grating in texture and attach the special 'glsl'
+%     % texture shader to it:
+%     gratingtex2 = Screen('MakeTexture', w, grating, [], [], [], [], glsl);
     
     % Definition of the drawn source rectangle on the screen:
     srcRect=[0 0 visiblesize visiblesize];
 
     % Definition of the drawn source rectangle on the screen:
-    src2Rect=[0 0 visible2size visible2size];
+%     src2Rect=[0 0 visible2size visible2size];
 
     % Query duration of monitor refresh interval:
     ifi=Screen('GetFlipInterval', w);
@@ -175,7 +182,7 @@ try
     i=0;
 
     %% Fixation cross preparation
-    FixationCross;
+%     FixationCross;
 
     %% Animation loop: Run until timeout or keypress.
     while (vbl < vblendtime) && ~KbCheck
@@ -192,9 +199,9 @@ try
 
         % Draw first grating texture, rotated by "angle":
         HideCursor; 
-        Screen('DrawTexture', w, gratingtex1, srcRect, [], angle, [], [], [], [], [], [0, yoffset, 0, 0]);
+        Screen('DrawTexture', w, gratingtex1, srcRect, [], angle, [], [], gray, [], [], [0, yoffset, 0, 0]);
         % Draw Fixation Cross
-        Screen('DrawLines', w, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2);
+%         Screen('DrawLines', w, fixCoords,stimulus.fixationLineWidth,stimulus.fixationColor,[screenCentreX screenCentreY],2);
 
         % Flip 'waitframes' monitor refresh intervals after last redraw.
         vbl = Screen('Flip', w, vbl + (waitframes - 0.5) * ifi);
