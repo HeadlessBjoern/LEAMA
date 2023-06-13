@@ -21,7 +21,7 @@ monitorwidth_cm = 53;
 dist_cm = 70;
 
 % Duration
-NrOfTrials = 2;   % How many cycles to run (8 if you want to run 6 cycles, 7 trials is 5 minutes)
+NrOfTrials = 7;   % How many cycles to run (8 if you want to run 6 cycles, 7 trials is 5 minutes)
 
 % Text
 tSize1 = 18;
